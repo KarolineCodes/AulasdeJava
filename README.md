@@ -31,7 +31,7 @@ Este repositório reúne aulas de **Java** feitas para meninas que estão dando 
 |:--:|------|--------------------|:----:|
 | 01 | 📦 **Variáveis** | Tipos de dados e o padrão camelCase | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/01-variaveis.html) |
 | 02 | ➕ **Concatenação e operadores** | Contas, frases com variáveis e comentários | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/02-concatenacao-operadores.html) |
-| 03 | 🌦️ **If e else** | Como o programa escolhe entre dois caminhos | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/03-if-else.html) |
+| 03 | 🌦️ **Condicionais** | Como o programa escolhe caminhos com if, else if e else | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/03-condicionais.html) |
 | 04 | ✨ *em breve* | | |
 
 ---
@@ -53,11 +53,11 @@ AulasdeJava/
 ├── aulas/              → uma página por aula
 │   ├── 01-variaveis.html
 │   ├── 02-concatenacao-operadores.html
-│   └── 03-if-else.html
+│   └── 03-condicionais.html
 └── imagens/            → capas que aparecem ao compartilhar o link
     ├── capa-01-variaveis.png
     ├── capa-02-concatenacao-operadores.png
-    └── capa-03-if-else.png
+    └── capa-03-condicionais.png
 ```
 
 ---
