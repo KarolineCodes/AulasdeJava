@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aula 03: Condicionais em Java</title>
-<meta name="description" content="Aprenda condicionais em Java (if, else if e else) de um jeito divertido e interativo.">
+<meta name="description" content="Aprenda condicionais em Java: operadores relacionais, if, else if, else, switch, && e ||, ! e printf, de um jeito divertido e interativo.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Aula 03: condicionais em Java, com if e else 💜">
-<meta property="og:description" content="Aprenda condicionais em Java (if, else if e else) de um jeito divertido e interativo.">
+<meta property="og:description" content="Aprenda condicionais em Java: operadores relacionais, if, else if, else, switch, && e ||, ! e printf, de um jeito divertido e interativo.">
 <meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-03-condicionais.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -160,6 +160,10 @@ input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75re
 @media (max-width:820px){.steps{grid-template-columns:1fr}}
 @media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
 .topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.codebox .ln.gone{display:none}
+.small{font-size:.9rem;color:var(--soft);margin-top:.6rem}
+table.mini{min-width:0}
+table.mini td{font-size:.95rem}
 /* celular */
 .hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
 .codebox,.tablewrap,.console{max-width:100%}
@@ -307,8 +311,8 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
 
 <section>
   <div class="wrap">
-    <h2>Como fazer perguntas para o computador</h2>
-    <p>Para montar a condição, você compara valores. Estes são os operadores de comparação do Java:</p>
+    <h2>Operadores relacionais: as perguntas do if</h2>
+    <p>Para montar a condição, você compara valores. Os operadores que fazem isso se chamam <strong>relacionais</strong>, porque mostram a relação entre dois valores. A resposta é sempre <code>true</code> ou <code>false</code>.</p>
     <div class="tablewrap">
       <table>
         <thead><tr><th>Símbolo</th><th>Significa</th><th>Exemplo</th><th>Resultado</th></tr></thead>
@@ -319,10 +323,56 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
           <tr><td>&lt;</td><td>é menor que</td><td><code>2 &lt; 9</code></td><td>true</td></tr>
           <tr><td>&gt;=</td><td>é maior ou igual a</td><td><code>18 &gt;= 18</code></td><td>true</td></tr>
           <tr><td>&lt;=</td><td>é menor ou igual a</td><td><code>4 &lt;= 1</code></td><td>false</td></tr>
-          <tr><td>&amp;&amp;</td><td>e (as duas precisam ser verdade)</td><td><code>idade &gt;= 12 &amp;&amp; temIngresso</code></td><td>depende</td></tr>
-          <tr><td>||</td><td>ou (basta uma ser verdade)</td><td><code>eSabado || eDomingo</code></td><td>depende</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="two" style="margin-top:2.5rem">
+      <div>
+        <h3>Mostrando a resposta direto na tela</h3>
+        <p>Você não precisa de um <code>if</code> para ver o resultado de uma comparação. Coloque a comparação dentro do <code>println</code> e o Java mostra <code>true</code> ou <code>false</code>.</p>
+        <p>Mude a quantidade de gatos de cada amiga e veja todas as respostas mudarem. 🐱</p>
+        <div class="form">
+          <label>gatosLia <input type="number" id="rA" value="4" step="1"></label>
+          <label>gatosMel <input type="number" id="rB" value="2" step="1"></label>
+        </div>
+        <div class="tip">
+          <h3>💡 Na frase, use parênteses</h3>
+          <p>Para juntar a comparação com um texto, coloque ela entre parênteses, igual fizemos com as contas na aula 02: <code>"São iguais? " + (a == b)</code>.</p>
+        </div>
+      </div>
+      <div>
+        <div class="codebox" aria-live="polite">
+<span class="ln"><span class="kw">int</span> gatosLia = <span class="nu" id="rcA">4</span>;</span>
+<span class="ln"><span class="kw">int</span> gatosMel = <span class="nu" id="rcB">2</span>;</span>
+<span class="ln"> </span>
+<span class="ln">System.out.println(gatosLia == gatosMel);</span>
+<span class="ln">System.out.println(gatosLia != gatosMel);</span>
+<span class="ln">System.out.println(gatosLia &gt; gatosMel);</span>
+<span class="ln">System.out.println(gatosLia &lt; gatosMel);</span>
+<span class="ln">System.out.println(gatosLia &gt;= gatosMel);</span>
+<span class="ln">System.out.println(gatosLia &lt;= gatosMel);</span>
+        </div>
+        <div class="console multi" id="rOut"></div>
+      </div>
+    </div>
+
+    <div class="two" style="margin-top:2.5rem">
+      <div>
+        <h3>O ! inverte tudo</h3>
+        <p>O ponto de exclamação é o operador de <strong>negação</strong>. Ele troca a resposta: o que era <code>true</code> vira <code>false</code>, e o que era <code>false</code> vira <code>true</code>. Leia <code>!</code> como <strong>"não"</strong>.</p>
+        <p>Lembra do <code>!=</code>? É a mesma ideia: "não é igual".</p>
+        <div class="form"><label class="check"><input type="checkbox" id="nFome" checked> estaComFome</label></div>
+      </div>
+      <div>
+        <div class="codebox" aria-live="polite">
+<span class="ln"><span class="kw">boolean</span> estaComFome = <span class="kw" id="ncV">true</span>;</span>
+<span class="ln"> </span>
+<span class="ln">System.out.println(estaComFome);</span>
+<span class="ln">System.out.println(!estaComFome);</span>
+        </div>
+        <div class="console multi" id="nOut"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -355,6 +405,147 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
 </section>
 
 <section>
+  <div class="wrap two">
+    <div>
+      <h2>Juntando condições: &amp;&amp; e ||</h2>
+      <p>Às vezes uma decisão depende de duas coisas ao mesmo tempo. Para isso o Java tem dois operadores lógicos:</p>
+      <p><code>&amp;&amp;</code> quer dizer <strong>E</strong>: só dá <code>true</code> se as <strong>duas</strong> condições forem verdadeiras.<br><code>||</code> quer dizer <strong>OU</strong>: dá <code>true</code> se <strong>pelo menos uma</strong> for verdadeira.</p>
+      <p>Imagine uma casa com duas regras. Para jogar videogame, precisa ter feito a tarefa <strong>e</strong> arrumado o quarto. Para ver um episódio de série, basta ter feito uma das duas. Marque e desmarque para testar.</p>
+      <div class="form">
+        <label class="check"><input type="checkbox" id="lTarefa" checked> Fez a tarefa</label>
+        <label class="check"><input type="checkbox" id="lQuarto"> Arrumou o quarto</label>
+      </div>
+      <div class="tablewrap" style="margin-top:1rem">
+        <table class="mini">
+          <thead><tr><th>A</th><th>B</th><th>A &amp;&amp; B</th><th>A || B</th></tr></thead>
+          <tbody>
+            <tr><td>true</td><td>true</td><td>true</td><td>true</td></tr>
+            <tr><td>true</td><td>false</td><td>false</td><td>true</td></tr>
+            <tr><td>false</td><td>true</td><td>false</td><td>true</td></tr>
+            <tr><td>false</td><td>false</td><td>false</td><td>false</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="codebox" aria-live="polite">
+<span class="ln"><span class="kw">boolean</span> fezTarefa = <span class="kw" id="lc1">true</span>;</span>
+<span class="ln"><span class="kw">boolean</span> arrumouQuarto = <span class="kw" id="lc2">false</span>;</span>
+<span class="ln"> </span>
+<span class="ln" id="lA"><span class="kw">if</span> (fezTarefa &amp;&amp; arrumouQuarto) {</span>
+<span class="ln" id="lA1">    System.out.println(<span class="st">"Pode jogar videogame 🎮"</span>);</span>
+<span class="ln" id="lA2">} <span class="kw">else</span> {</span>
+<span class="ln" id="lA3">    System.out.println(<span class="st">"Videogame ainda não 😅"</span>);</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln" id="lB"><span class="kw">if</span> (fezTarefa || arrumouQuarto) {</span>
+<span class="ln" id="lB1">    System.out.println(<span class="st">"Pode ver um episódio 📺"</span>);</span>
+<span class="ln" id="lB2">} <span class="kw">else</span> {</span>
+<span class="ln" id="lB3">    System.out.println(<span class="st">"Nada de tela hoje 📵"</span>);</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi" id="lOut"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Switch: quando são muitas opções</h2>
+      <p>Quando você compara <strong>uma mesma variável</strong> com vários valores exatos (1, 2, 3...), uma fila enorme de <code>else if</code> fica cansativa de ler. O <code>switch</code> organiza isso: ele olha o valor e pula direto para o <code>case</code> certo.</p>
+      <p>O <code>break</code> diz "pronto, pode sair". E o <code>default</code> é o plano B, igual ao <code>else</code>: roda quando nenhum <code>case</code> combina.</p>
+      <p>Escolha um sabor de sorvete. Depois tire os <code>break</code> e veja o que acontece. 🍦</p>
+      <div class="toggle" role="group" aria-label="Escolha o número do sabor" id="sBtns">
+        <button data-v="1" aria-pressed="true">1</button>
+        <button data-v="2" aria-pressed="false">2</button>
+        <button data-v="3" aria-pressed="false">3</button>
+        <button data-v="7" aria-pressed="false">7</button>
+      </div>
+      <div class="form"><label class="check"><input type="checkbox" id="sBreak"> Tirar os break</label></div>
+      <div class="tip" id="sTip" hidden><p>Viu? Sem o <code>break</code>, o Java entra no case certo e <strong>continua descendo</strong> por todos os seguintes. Por isso nunca esqueça do <code>break</code>.</p></div>
+    </div>
+    <div>
+      <div class="codebox" aria-live="polite">
+<span class="ln"><span class="kw">int</span> sabor = <span class="nu" id="sVal">1</span>;</span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">switch</span> (sabor) {</span>
+<span class="ln" data-s="1c">    <span class="kw">case</span> <span class="nu">1</span>:</span>
+<span class="ln" data-s="1p">        System.out.println(<span class="st">"Morango 🍓"</span>);</span>
+<span class="ln brk" data-s="1b">        <span class="kw">break</span>;</span>
+<span class="ln" data-s="2c">    <span class="kw">case</span> <span class="nu">2</span>:</span>
+<span class="ln" data-s="2p">        System.out.println(<span class="st">"Chocolate 🍫"</span>);</span>
+<span class="ln brk" data-s="2b">        <span class="kw">break</span>;</span>
+<span class="ln" data-s="3c">    <span class="kw">case</span> <span class="nu">3</span>:</span>
+<span class="ln" data-s="3p">        System.out.println(<span class="st">"Flocos 🍨"</span>);</span>
+<span class="ln brk" data-s="3b">        <span class="kw">break</span>;</span>
+<span class="ln" data-s="dc">    <span class="kw">default</span>:</span>
+<span class="ln" data-s="dp">        System.out.println(<span class="st">"Esse sabor não existe 🙈"</span>);</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi" id="sOut"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Printf: mostrando números bonitinhos</h2>
+      <p>Até agora usamos o <code>println</code>. O Java tem uma terceira forma de mostrar mensagens na tela, o <strong><code>printf</code></strong> (o "f" é de <em>formatado</em>). Ele deixa você escolher <strong>quantas casas decimais</strong> um número vai ter.</p>
+      <p>Dentro do texto, você coloca um <strong>marcador</strong> no lugar onde o valor deve aparecer, e depois da vírgula diz qual variável vai ali. O <code>\n</code> no final é o "enter": pula para a próxima linha.</p>
+      <div class="slider" style="margin-top:1rem">
+        <label for="pCasas">Casas decimais no marcador</label>
+        <div class="big" id="pCasasVal">2</div>
+        <input type="range" id="pCasas" min="0" max="5" step="1" value="2">
+        <div class="form"><label class="check"><input type="checkbox" id="pN" checked> Usar \n no final</label></div>
+      </div>
+    </div>
+    <div>
+      <div class="codebox" aria-live="polite">
+<span class="ln"><span class="kw">double</span> resultado = <span class="nu">10.0</span> / <span class="nu">3</span>;</span>
+<span class="ln"> </span>
+<span class="ln">System.out.println(resultado);</span>
+<span class="ln">System.out.printf(<span class="st">"Deu %.<span id="pC1">2</span>f<span class="pn">\n</span>"</span>, resultado);</span>
+<span class="ln">System.out.printf(<span class="st">"Pronto!<span class="pn">\n</span>"</span>);</span>
+      </div>
+      <div class="console multi" id="pOut"></div>
+      <p class="small">Em computadores configurados em português, o printf pode mostrar vírgula no lugar do ponto (3,33). É normal!</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <h3 style="margin-top:2rem">As três formas de mostrar mensagens</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Comando</th><th>O que faz</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td>print</td><td>mostra e <strong>continua na mesma linha</strong></td><td><code>System.out.print("Oi ");</code></td></tr>
+          <tr><td>println</td><td>mostra e <strong>pula a linha</strong> sozinho</td><td><code>System.out.println("Oi");</code></td></tr>
+          <tr><td>printf</td><td>mostra com <strong>formatação</strong>; pula linha só com <code>\n</code></td><td><code>System.out.printf("%.1f\n", x);</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 style="margin-top:2rem">Marcadores mais usados no printf</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Marcador</th><th>Para</th><th>Exemplo</th><th>Mostra</th></tr></thead>
+        <tbody>
+          <tr><td>%d</td><td>número inteiro (<code>int</code>)</td><td><code>printf("Tenho %d gatos\n", 3)</code></td><td>Tenho 3 gatos</td></tr>
+          <tr><td>%.2f</td><td>decimal (<code>double</code>) com 2 casas</td><td><code>printf("R$ %.2f\n", 9.5)</code></td><td>R$ 9.50</td></tr>
+          <tr><td>%s</td><td>texto (<code>String</code>)</td><td><code>printf("Oi, %s!\n", nome)</code></td><td>Oi, Bia!</td></tr>
+          <tr><td>\n</td><td>pular linha</td><td><code>printf("A\nB")</code></td><td>A e B em linhas separadas</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tip">
+      <h3>💡 Vários marcadores numa frase só</h3>
+      <p>Dá para usar mais de um marcador. Os valores entram na mesma ordem em que aparecem depois da vírgula:</p>
+      <div class="codebox"><span class="ln">System.out.printf(<span class="st">"%s tem %d anos e %.2f m\n"</span>, nome, idade, altura);</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
   <div class="wrap">
     <h2>Erros que toda iniciante comete (e tudo bem)</h2>
     <p>Errar faz parte de aprender a programar. Até programadoras experientes esbarram nestes:</p>
@@ -376,6 +567,21 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
         <p>Para <code>String</code>, use <code>.equals()</code>.</p>
         <div class="bad">if (nome == "Ana")</div>
         <div class="good">if (nome.equals("Ana"))</div>
+      </div>
+      <div class="oop">
+        <h3>Esquecer o break no switch</h3>
+        <p>Sem ele, o Java continua executando os cases de baixo.</p>
+        <div class="bad">case 1:
+    System.out.println("Um");</div>
+        <div class="good">case 1:
+    System.out.println("Um");
+    break;</div>
+      </div>
+      <div class="oop">
+        <h3>Marcador errado no printf</h3>
+        <p><code>%d</code> é para inteiro e <code>%f</code> é para decimal. Trocar dá erro.</p>
+        <div class="bad">printf("%d\n", 7.5);</div>
+        <div class="good">printf("%.1f\n", 7.5);</div>
       </div>
       <div class="oop">
         <h3>Esquecer de fechar as chaves</h3>
@@ -409,6 +615,21 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
       <h3>3. Com <code>nota = 5</code>, o que o programa das notas mostra?</h3>
       <div class="opts"><button data-o="a">Recuperação</button><button data-o="b">Aprovada</button><button data-o="c">Bora estudar mais</button></div>
       <div class="fb" aria-live="polite" data-ok="Mandou bem! 5 >= 7 é falso, mas 5 >= 5 é verdadeiro." data-no="Olha de novo: 5 >= 7 é falso, mas 5 >= 5 é verdadeiro."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>4. Com <code>a = true</code> e <code>b = false</code>, quanto dá <code>a &amp;&amp; b</code>?</h3>
+      <div class="opts"><button data-o="a">true</button><button data-o="b">Dá erro</button><button data-o="c">false</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! Com &&, as duas precisam ser verdadeiras." data-no="Quase. O && só dá true se as duas forem true, e b é false."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>5. Com <code>boolean temPet = false;</code>, o que <code>System.out.println(!temPet);</code> mostra?</h3>
+      <div class="opts"><button data-o="a">true</button><button data-o="b">false</button><button data-o="c">!false</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! O ! inverte: não false é true." data-no="Quase. O ! inverte o valor, então false vira true."></div>
+    </div>
+    <div class="q" data-right="b">
+      <h3>6. O que <code>System.out.printf("%.1f\n", 2.567);</code> mostra?</h3>
+      <div class="opts"><button data-o="a">2.567</button><button data-o="b">2.6</button><button data-o="c">2.5</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! Uma casa decimal, e o printf arredonda." data-no="Não é esse. %.1f deixa uma casa e arredonda: 2.6."></div>
     </div>
   </div>
 </section>
@@ -453,7 +674,7 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
 </section>
 </main>
 
-<footer><div class="wrap"><div class="lessonnav"><a href="02-concatenacao-operadores.html">← Aula 02</a><a href="../index.html">Todas as aulas</a><span></span></div>Próximo passo: aprender <code>switch</code> e laços de repetição. Um passo de cada vez. 💜</div></footer>
+<footer><div class="wrap"><div class="lessonnav"><a href="02-concatenacao-operadores.html">← Aula 02</a><a href="../index.html">Todas as aulas</a><span></span></div>Próximo passo: laços de repetição. Um passo de cada vez. 💜</div></footer>
 
 <script>
 (function(){
@@ -502,6 +723,55 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
   // desafio
   var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');
   rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'};
+})();
+(function(){
+  function $(i){return document.getElementById(i)}
+  function mark(id,on){var e=$(id);e.classList.remove('on','off');e.classList.add(on?'on':'off')}
+  function logic(){
+    var t=$('lTarefa').checked,q=$('lQuarto').checked,A=t&&q,B=t||q;
+    $('lc1').textContent=t;$('lc2').textContent=q;
+    mark('lA',true);mark('lA1',A);mark('lA2',!A);mark('lA3',!A);
+    mark('lB',true);mark('lB1',B);mark('lB2',!B);mark('lB3',!B);
+    $('lOut').textContent=(A?'Pode jogar videogame 🎮':'Videogame ainda não 😅')+'\n'+(B?'Pode ver um episódio 📺':'Nada de tela hoje 📵');
+  }
+  $('lTarefa').addEventListener('change',logic);$('lQuarto').addEventListener('change',logic);logic();
+
+  var sabor=1,textos={'1':'Morango 🍓','2':'Chocolate 🍫','3':'Flocos 🍨','d':'Esse sabor não existe 🙈'};
+  function sw(){
+    var nb=$('sBreak').checked,order=['1','2','3','d'];
+    var start=order.indexOf(String(sabor));if(start<0)start=3;
+    var run=nb?order.slice(start):[order[start]];
+    $('sVal').textContent=sabor;
+    document.querySelectorAll('[data-s]').forEach(function(l){
+      var k=l.dataset.s,g=k[0],part=k.slice(1);
+      l.classList.remove('on','off','gone');
+      if(part==='b'&&nb){l.classList.add('gone');return}
+      if(run.indexOf(g)>-1){l.classList.add(part==='b'&&g!==run[run.length-1]&&nb?'off':'on')}else l.classList.add('off');
+    });
+    $('sOut').textContent=run.map(function(g){return textos[g]}).join('\n');
+    $('sTip').hidden=!(nb&&run.length>1);
+    document.querySelectorAll('#sBtns button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v==sabor)});
+  }
+  document.querySelectorAll('#sBtns button').forEach(function(b){b.onclick=function(){sabor=+b.dataset.v;sw()}});
+  $('sBreak').addEventListener('change',sw);sw();
+
+  function pf(){
+    var c=+$('pCasas').value,n=$('pN').checked,r=10/3;
+    $('pCasasVal').textContent=c;$('pC1').textContent=c;
+    document.querySelectorAll('.pn').forEach(function(e){e.style.display=n?'':'none'});
+    var linha2='Deu '+r.toFixed(c);
+    $('pOut').textContent='3.3333333333333335\n'+(n?linha2+'\nPronto!':linha2+'Pronto!');
+  }
+  $('pCasas').addEventListener('input',pf);$('pN').addEventListener('change',pf);pf();
+})();
+(function(){
+  function $(i){return document.getElementById(i)}
+  function rel(){var a=parseInt($('rA').value,10),b=parseInt($('rB').value,10);if(isNaN(a))a=0;if(isNaN(b))b=0;
+    $('rcA').textContent=a;$('rcB').textContent=b;
+    $('rOut').textContent=[a==b,a!=b,a>b,a<b,a>=b,a<=b].join('\n')}
+  $('rA').addEventListener('input',rel);$('rB').addEventListener('input',rel);rel();
+  function neg(){var v=$('nFome').checked;$('ncV').textContent=v;$('nOut').textContent=v+'\n'+(!v)}
+  $('nFome').addEventListener('change',neg);neg();
 })();
 </script>
 </body>
