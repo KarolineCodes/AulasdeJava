@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aulas de Java 💜</title>
+<meta name="description" content="Aulas de Java interativas para meninas que estão começando a programar.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aulas de Java 💜">
+<meta property="og:description" content="Aulas interativas para meninas que estão começando a programar.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-01-if-else.png">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F3FF;--surface:#fff;--ink:#2A1B4D;--soft:#5E5180;--plum:#6B2FD6;--coral:#FF6B6B;--sun:#FFC845;--mint:#2FBF8F;--line:#E3DBFA;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#170F2E;--surface:#221842;--ink:#F2ECFF;--soft:#B9ACE0;--plum:#A77BFF;--line:#3A2C66}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:0 1.25rem}
+header{background:#6B2FD6;color:#fff;padding:3.5rem 0 3rem}
+h1,h2{font-family:"Fredoka","Nunito",sans-serif;margin:0 0 .4em;line-height:1.1}
+h1{font-size:clamp(2.4rem,7vw,4rem)}
+header p{font-size:1.2rem;max-width:52ch;color:#EDE6FF;margin:0}
+.tag{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 1rem "Fredoka",sans-serif;padding:.3rem .9rem;border-radius:999px;margin-bottom:1rem}
+main{padding:2.5rem 0 3rem}
+.aulas{list-style:none;padding:0;margin:0;display:grid;gap:1rem}
+.aula a{display:flex;gap:1.1rem;align-items:center;background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1rem 1.2rem;color:inherit;text-decoration:none}
+.aula a:hover{background:var(--line)}
+.aula a:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.num{flex:none;width:3.2rem;height:3.2rem;border-radius:50%;display:grid;place-items:center;font:700 1.3rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D}
+.aula h2{font-size:1.35rem;margin:0}
+.aula p{margin:0;color:var(--soft)}
+.breve{border:3px dashed var(--line);border-radius:22px;padding:1rem 1.2rem;color:var(--soft);text-align:center}
+footer{text-align:center;color:var(--soft);padding:0 0 2.5rem}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="tag">Java para iniciantes</span>
+  <h1>Aulas de Java 💜</h1>
+  <p>Uma aula nova por dia, com exemplos que você pode clicar e testar. Escolha uma e comece.</p>
+</div></header>
+<main><div class="wrap">
+  <ul class="aulas" id="lista"></ul>
+  <p class="breve" style="margin-top:1rem">Novas aulas chegando em breve ✨</p>
+</div></main>
+<footer>Feito com carinho por KarolineCodes</footer>
+<script>
+/* Para adicionar uma aula nova, copie uma linha abaixo e troque os dados */
+var aulas=[
+  {num:1, titulo:"If e else", resumo:"Como o programa escolhe um caminho: se chover, guarda-chuva; senão, óculos de sol.", arquivo:"aulas/01-if-else.html"},
+];
+var ul=document.getElementById('lista');
+aulas.forEach(function(a){
+  var li=document.createElement('li');li.className='aula';
+  li.innerHTML='<a href="'+a.arquivo+'"><span class="num">'+String(a.num).padStart(2,'0')+'</span><span><h2>'+a.titulo+'</h2><p>'+a.resumo+'</p></span></a>';
+  ul.appendChild(li);
+});
+</script>
+</body>
+</html>
