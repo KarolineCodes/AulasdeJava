@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula 03: If e else em Java</title>
+<meta name="description" content="Aprenda if e else em Java de um jeito divertido e interativo.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aula 03: aprenda if e else de um jeito divertido 💜">
+<meta property="og:description" content="Aprenda if e else em Java de um jeito divertido e interativo.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-03-if-else.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/aulas/03-if-else.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-03-if-else.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3FF; --surface:#FFFFFF; --ink:#2A1B4D; --soft:#5E5180;
+  --plum:#6B2FD6; --coral:#FF6B6B; --sun:#FFC845; --mint:#2FBF8F;
+  --code-bg:#241845; --code-ink:#EDE6FF; --line:#E3DBFA;
+  --kw:#FF9ECF; --str:#8FF0C8; --num:#FFD66B; --com:#9C8CC9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+    --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+  --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Fredoka","Nunito",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.5rem 0}
+section + section{border-top:2px dashed var(--line)}
+code,.code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+p code,li code,td code{background:var(--line);padding:.1em .35em;border-radius:6px;font-size:.92em}
+
+/* hero */
+.hero{padding:3rem 0 3.5rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:2rem;align-items:center}
+.hero h1 .fork{display:block;color:var(--plum)}
+.lead{font-size:1.2rem;color:var(--soft)}
+.scene{background:var(--surface);border-radius:28px;padding:1rem;border:3px solid var(--ink)}
+.scene svg{width:100%;height:auto;display:block;border-radius:18px}
+.toggle{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.toggle button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:.55rem 1rem;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--sun);color:#2A1B4D}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+/* scene states */
+#cena .r,#cena .s{transition:opacity .4s}
+#cena.sol .r{opacity:0}
+#cena.chuva .s{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #cena.chuva .drop{animation:fall 1s linear infinite}
+  #cena.chuva .drop:nth-child(2n){animation-delay:.3s}
+  #cena.chuva .drop:nth-child(3n){animation-delay:.6s}
+}
+@keyframes fall{from{transform:translateY(-10px)}to{transform:translateY(40px)}}
+
+/* code block */
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:18px;padding:1rem 0;overflow-x:auto;font-size:.95rem;line-height:1.7}
+.codebox .ln{display:block;padding:0 1.1rem;white-space:pre;border-left:5px solid transparent;transition:background .3s,border-color .3s}
+.codebox .ln.on{background:rgba(255,200,69,.16);border-left-color:var(--sun)}
+.codebox .ln.off{opacity:.45}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--com);font-style:italic}
+.console{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.95rem;overflow-x:auto}
+.console::before{content:"saída › ";color:#777}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+/* anatomia */
+.anatomy{display:grid;gap:.8rem;margin-top:1rem}
+.part{display:flex;gap:.9rem;align-items:flex-start}
+.chip{flex:none;font:600 .9rem "JetBrains Mono",monospace;padding:.3rem .6rem;border-radius:10px;background:var(--sun);color:#2A1B4D}
+.chip.c2{background:var(--mint);color:#08251B}
+.chip.c3{background:var(--coral);color:#fff}
+.chip.c4{background:var(--plum);color:#fff}
+
+/* tabela */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--surface);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:"Fredoka",sans-serif;font-weight:600;background:var(--line)}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--plum);font-size:1.1rem}
+
+/* slider */
+.slider{background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1.2rem}
+.slider label{font-weight:800;display:block;margin-bottom:.4rem}
+.slider input[type=range]{width:100%;accent-color:var(--plum)}
+.big{font:700 3rem "Fredoka",sans-serif;color:var(--plum);line-height:1}
+.result{font:600 1.3rem "Fredoka",sans-serif;margin-top:.6rem}
+
+/* erros */
+.oops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.oop{background:var(--surface);border-radius:20px;padding:1.1rem 1.2rem;border:2px solid var(--line)}
+.oop .bad,.oop .good{font-family:"JetBrains Mono",monospace;font-size:.92rem;padding:.45rem .7rem;border-radius:10px;margin:.35rem 0;overflow-x:auto;white-space:pre}
+.bad{background:rgba(255,107,107,.15);color:var(--ink)}
+.bad::before{content:"✗ ";color:var(--coral);font-weight:700}
+.good{background:rgba(47,191,143,.15);color:var(--ink)}
+.good::before{content:"✓ ";color:var(--mint);font-weight:700}
+
+/* quiz */
+.q{background:var(--surface);border-radius:22px;padding:1.2rem;margin-bottom:1.2rem;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.opts button{font:600 1rem "Nunito",sans-serif;padding:.55rem 1rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.opts button.right{background:var(--mint);color:#08251B;border-color:var(--mint)}
+.opts button.wrong{background:var(--coral);color:#fff;border-color:var(--coral)}
+.fb{margin-top:.7rem;font-weight:600;min-height:1.6em}
+
+.challenge{background:var(--plum);color:#fff;border-radius:28px;padding:1.8rem}
+.challenge p{color:#fff}
+.challenge button{font:600 1rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D;border:none;padding:.65rem 1.2rem;border-radius:999px;cursor:pointer;margin-top:.5rem}
+.challenge .codebox{margin-top:1rem}
+.company{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.person{border-left:5px solid var(--sun);padding:.3rem 0 .3rem 1rem}
+.person strong{font-family:"Fredoka",sans-serif;font-size:1.15rem;display:block}
+footer{padding:2rem 0 3rem;color:var(--soft);text-align:center}
+
+@media (max-width:820px){
+  .hero-grid,.two{grid-template-columns:1fr}
+}
+
+.form{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1rem}
+.form label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.form .check{flex-direction:row;align-items:center;gap:.5rem;align-self:end;padding-bottom:.6rem}
+.check input{width:1.3rem;height:1.3rem;accent-color:var(--plum)}
+input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.caixa{background:var(--bg);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.caixa .et{background:var(--sun);color:#2A1B4D;font:600 .85rem "JetBrains Mono",monospace;padding:.35rem .7rem;border-bottom:3px solid var(--ink);overflow-wrap:anywhere}
+.caixa .vl{padding:.6rem .7rem 0;font:600 1.35rem "Fredoka",sans-serif;overflow-wrap:anywhere;min-height:2.2rem}
+.caixa .tp{font:.8rem "JetBrains Mono",monospace;color:var(--soft);padding:0 .7rem .5rem}
+.tip{background:var(--surface);border-left:6px solid var(--sun);border-radius:0 18px 18px 0;padding:1rem 1.2rem;margin-top:1.5rem}
+.tip p:last-child{margin-bottom:0}
+.rules{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.3rem;font-weight:600}
+.rules .yes{color:var(--mint)}.rules .no{color:var(--coral)}
+.console.multi{white-space:pre-line}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.lessonnav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lessonnav a{color:var(--plum);font-weight:800}
+.num-aula{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 .95rem "Fredoka",sans-serif;padding:.25rem .8rem;border-radius:999px;margin-bottom:1rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+@media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="num-aula">Aula 03 de Java, 23 de setembro</span>
+      <h1>Todo programa precisa decidir.<span class="fork">If e else ensinam como.</span></h1>
+      <p class="lead">Você já faz isso toda manhã: se está chovendo, pega o guarda-chuva; senão, pega os óculos de sol. Em Java, essa decisão vira código. Aperte os botões e veja qual caminho o programa escolhe.</p>
+      <div class="toggle" role="group" aria-label="Como está o tempo?">
+        <button id="bChuva" aria-pressed="true">☔ Está chovendo</button>
+        <button id="bSol" aria-pressed="false">☀️ Está sol</button>
+      </div>
+    </div>
+    <div class="scene">
+      <svg id="cena" class="chuva" viewBox="0 0 400 300" role="img" aria-label="Ilustração de uma menina que muda de acessório conforme o tempo">
+        <!-- céu -->
+        <rect class="r" width="400" height="300" fill="#8FA3D6"/>
+        <rect class="s" width="400" height="300" fill="#8FD8FF"/>
+        <!-- sol -->
+        <g class="s">
+          <circle cx="320" cy="70" r="36" fill="#FFC845"/>
+          <g stroke="#FFC845" stroke-width="6" stroke-linecap="round">
+            <line x1="320" y1="14" x2="320" y2="24"/><line x1="320" y1="116" x2="320" y2="126"/>
+            <line x1="264" y1="70" x2="274" y2="70"/><line x1="366" y1="70" x2="376" y2="70"/>
+            <line x1="281" y1="31" x2="288" y2="38"/><line x1="352" y1="102" x2="359" y2="109"/>
+            <line x1="359" y1="31" x2="352" y2="38"/><line x1="288" y1="102" x2="281" y2="109"/>
+          </g>
+        </g>
+        <!-- nuvem e chuva -->
+        <g class="r">
+          <g fill="#EEF0FA">
+            <circle cx="90" cy="60" r="28"/><circle cx="125" cy="48" r="34"/><circle cx="162" cy="62" r="26"/><rect x="70" y="60" width="110" height="28" rx="14"/>
+            <circle cx="290" cy="50" r="22"/><circle cx="318" cy="42" r="28"/><circle cx="348" cy="54" r="20"/><rect x="274" y="52" width="92" height="22" rx="11"/>
+          </g>
+          <g fill="#3E6BD6">
+            <ellipse class="drop" cx="95" cy="110" rx="3" ry="7"/><ellipse class="drop" cx="130" cy="125" rx="3" ry="7"/>
+            <ellipse class="drop" cx="160" cy="105" rx="3" ry="7"/><ellipse class="drop" cx="300" cy="95" rx="3" ry="7"/>
+            <ellipse class="drop" cx="330" cy="115" rx="3" ry="7"/><ellipse class="drop" cx="355" cy="92" rx="3" ry="7"/>
+            <ellipse class="drop" cx="60" cy="140" rx="3" ry="7"/><ellipse class="drop" cx="370" cy="140" rx="3" ry="7"/>
+          </g>
+        </g>
+        <!-- chão -->
+        <rect y="250" width="400" height="50" fill="#5FC98C"/>
+        <!-- menina -->
+        <g>
+          <!-- cabelo atrás -->
+          <path d="M165 150 q35 -60 70 0 v45 h-70z" fill="#3B2314"/>
+          <!-- pernas -->
+          <rect x="185" y="228" width="12" height="26" rx="5" fill="#8A5A3C"/>
+          <rect x="203" y="228" width="12" height="26" rx="5" fill="#8A5A3C"/>
+          <ellipse cx="190" cy="254" rx="11" ry="5" fill="#2A1B4D"/>
+          <ellipse cx="210" cy="254" rx="11" ry="5" fill="#2A1B4D"/>
+          <!-- vestido -->
+          <path d="M178 180 h44 l14 52 h-72z" fill="#6B2FD6"/>
+          <!-- braço -->
+          <rect x="222" y="184" width="10" height="34" rx="5" fill="#8A5A3C" transform="rotate(-35 227 186)"/>
+          <rect x="168" y="186" width="10" height="32" rx="5" fill="#8A5A3C" transform="rotate(12 173 188)"/>
+          <!-- rosto -->
+          <circle cx="200" cy="152" r="28" fill="#A26C49"/>
+          <path d="M172 146 q28 -34 56 0 q-10 -12 -28 -10 q-18 -2 -28 10z" fill="#3B2314"/>
+          <circle cx="232" cy="136" r="9" fill="#3B2314"/>
+          <path d="M190 164 q10 8 20 0" stroke="#2A1B4D" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="186" cy="160" r="4" fill="#FF8FA8" opacity=".6"/><circle cx="214" cy="160" r="4" fill="#FF8FA8" opacity=".6"/>
+          <!-- olhos (chuva) -->
+          <g class="r" fill="#2A1B4D"><circle cx="190" cy="150" r="3.5"/><circle cx="210" cy="150" r="3.5"/></g>
+          <!-- óculos de sol -->
+          <g class="s">
+            <rect x="178" y="143" width="19" height="13" rx="5" fill="#2A1B4D"/>
+            <rect x="203" y="143" width="19" height="13" rx="5" fill="#2A1B4D"/>
+            <line x1="197" y1="148" x2="203" y2="148" stroke="#2A1B4D" stroke-width="3"/>
+          </g>
+          <!-- guarda-chuva -->
+          <g class="r">
+            <line x1="244" y1="164" x2="244" y2="100" stroke="#2A1B4D" stroke-width="4"/>
+            <path d="M184 104 q60 -70 120 0 q-10 -10 -20 0 q-10 -10 -20 0 q-10 -10 -20 0 q-10 -10 -20 0 q-10 -10 -20 0 q-10 -10 -20 0z" fill="#FF6B6B"/>
+          </g>
+          <!-- sorvete no sol -->
+          <g class="s">
+            <path d="M239 160 l7 22 l7 -22z" fill="#E0A55C"/>
+            <circle cx="246" cy="156" r="8" fill="#FF9ECF"/>
+          </g>
+        </g>
+      </svg>
+      <div style="margin-top:1rem">
+        <div class="codebox" id="heroCode" aria-live="polite">
+<span class="ln" data-l="v"><span class="kw">boolean</span> estaChovendo = <span class="kw" id="heroVal">true</span>;</span>
+<span class="ln"> </span>
+<span class="ln" data-l="if"><span class="kw">if</span> (estaChovendo) {</span>
+<span class="ln" data-l="a">    System.out.println(<span class="st">"Levar guarda-chuva ☂️"</span>);</span>
+<span class="ln" data-l="else">} <span class="kw">else</span> {</span>
+<span class="ln" data-l="b">    System.out.println(<span class="st">"Levar óculos de sol 😎"</span>);</span>
+<span class="ln">}</span>
+        </div>
+        <div class="console" id="heroOut">Levar guarda-chuva ☂️</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>O que acabou de acontecer?</h2>
+      <p>O computador segue o código de cima para baixo, linha por linha. Quando chega num <code>if</code>, ele para e faz uma pergunta que só tem duas respostas possíveis: <strong>verdadeiro</strong> (<code>true</code>) ou <strong>falso</strong> (<code>false</code>).</p>
+      <p>Se a resposta for verdadeira, ele entra no primeiro bloco de chaves. Se for falsa, pula esse bloco e entra no bloco do <code>else</code>. Nunca os dois ao mesmo tempo. É como uma bifurcação numa trilha: você escolhe um lado.</p>
+      <p>Em português: <em>if</em> quer dizer <strong>se</strong>, e <em>else</em> quer dizer <strong>senão</strong>.</p>
+    </div>
+    <div>
+      <h3>As peças do if/else</h3>
+      <div class="anatomy">
+        <div class="part"><span class="chip">if</span><span>A palavra que começa a pergunta. Sempre em letra minúscula.</span></div>
+        <div class="part"><span class="chip c2">( condição )</span><span>A pergunta em si, sempre entre parênteses. Ela precisa dar <code>true</code> ou <code>false</code>.</span></div>
+        <div class="part"><span class="chip c3">{ ... }</span><span>As chaves guardam o que deve acontecer se a condição for verdadeira.</span></div>
+        <div class="part"><span class="chip c4">else { ... }</span><span>Opcional. É o plano B: roda só quando a condição é falsa.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Como fazer perguntas para o computador</h2>
+    <p>Para montar a condição, você compara valores. Estes são os operadores de comparação do Java:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Símbolo</th><th>Significa</th><th>Exemplo</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>==</td><td>é igual a</td><td><code>5 == 5</code></td><td>true</td></tr>
+          <tr><td>!=</td><td>é diferente de</td><td><code>3 != 7</code></td><td>true</td></tr>
+          <tr><td>&gt;</td><td>é maior que</td><td><code>10 &gt; 20</code></td><td>false</td></tr>
+          <tr><td>&lt;</td><td>é menor que</td><td><code>2 &lt; 9</code></td><td>true</td></tr>
+          <tr><td>&gt;=</td><td>é maior ou igual a</td><td><code>18 &gt;= 18</code></td><td>true</td></tr>
+          <tr><td>&lt;=</td><td>é menor ou igual a</td><td><code>4 &lt;= 1</code></td><td>false</td></tr>
+          <tr><td>&amp;&amp;</td><td>e (as duas precisam ser verdade)</td><td><code>idade &gt;= 12 &amp;&amp; temIngresso</code></td><td>depende</td></tr>
+          <tr><td>||</td><td>ou (basta uma ser verdade)</td><td><code>eSabado || eDomingo</code></td><td>depende</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>E quando existem mais de dois caminhos?</h2>
+      <p>Às vezes a vida não é só "sim ou não". Uma nota pode significar aprovada, recuperação ou reprovada. Para isso existe o <code>else if</code>: ele faz uma nova pergunta quando a anterior deu falso.</p>
+      <p>O Java testa as condições na ordem em que aparecem e para na primeira verdadeira. Arraste a nota e observe qual linha acende.</p>
+      <div class="slider">
+        <label for="nota">Nota da prova</label>
+        <div class="big" id="notaVal">8</div>
+        <input type="range" id="nota" min="0" max="10" step="1" value="8">
+        <div class="result" id="notaRes">Aprovada! 🎉</div>
+      </div>
+    </div>
+    <div class="codebox" id="notaCode" aria-live="polite">
+<span class="ln"><span class="kw">int</span> nota = <span class="nu" id="notaNum">8</span>;</span>
+<span class="ln"> </span>
+<span class="ln" data-l="c1"><span class="kw">if</span> (nota &gt;= <span class="nu">7</span>) {</span>
+<span class="ln" data-l="a">    System.out.println(<span class="st">"Aprovada! 🎉"</span>);</span>
+<span class="ln" data-l="c2">} <span class="kw">else if</span> (nota &gt;= <span class="nu">5</span>) {</span>
+<span class="ln" data-l="b">    System.out.println(<span class="st">"Recuperação 📚"</span>);</span>
+<span class="ln" data-l="c3">} <span class="kw">else</span> {</span>
+<span class="ln" data-l="c">    System.out.println(<span class="st">"Bora estudar mais 💪"</span>);</span>
+<span class="ln">}</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Erros que toda iniciante comete (e tudo bem)</h2>
+    <p>Errar faz parte de aprender a programar. Até programadoras experientes esbarram nestes:</p>
+    <div class="oops">
+      <div class="oop">
+        <h3>Um igual em vez de dois</h3>
+        <p>Um <code>=</code> guarda um valor. Dois <code>==</code> comparam.</p>
+        <div class="bad">if (idade = 15)</div>
+        <div class="good">if (idade == 15)</div>
+      </div>
+      <div class="oop">
+        <h3>Ponto e vírgula depois do if</h3>
+        <p>O <code>;</code> encerra o if na hora, e o bloco roda sempre.</p>
+        <div class="bad">if (nota &gt; 7); {</div>
+        <div class="good">if (nota &gt; 7) {</div>
+      </div>
+      <div class="oop">
+        <h3>Comparar textos com ==</h3>
+        <p>Para <code>String</code>, use <code>.equals()</code>.</p>
+        <div class="bad">if (nome == "Ana")</div>
+        <div class="good">if (nome.equals("Ana"))</div>
+      </div>
+      <div class="oop">
+        <h3>Esquecer de fechar as chaves</h3>
+        <p>Cada <code>{</code> precisa do seu <code>}</code>. Alinhar o código ajuda a enxergar.</p>
+        <div class="bad">if (x &gt; 0) {
+    ...
+// cadê a chave?</div>
+        <div class="good">if (x &gt; 0) {
+    ...
+}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Teste o que você aprendeu</h2>
+    <div class="q" data-right="b">
+      <h3>1. O que este código mostra?</h3>
+      <div class="codebox"><span class="ln"><span class="kw">int</span> x = <span class="nu">3</span>;</span><span class="ln"><span class="kw">if</span> (x &gt; <span class="nu">5</span>) { System.out.println(<span class="st">"Grande"</span>); }</span><span class="ln"><span class="kw">else</span> { System.out.println(<span class="st">"Pequeno"</span>); }</span></div>
+      <div class="opts"><button data-o="a">Grande</button><button data-o="b">Pequeno</button><button data-o="c">Os dois</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! 3 não é maior que 5, então o else roda." data-no="Quase. 3 > 5 é falso, então só o else roda."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>2. Qual operador significa "diferente de"?</h3>
+      <div class="opts"><button data-o="a">&lt;&gt;</button><button data-o="b">=!</button><button data-o="c">!=</button></div>
+      <div class="fb" aria-live="polite" data-ok="Certinho! != lê-se 'diferente de'." data-no="Não é esse. Em Java, 'diferente de' é !=."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>3. Com <code>nota = 5</code>, o que o programa das notas mostra?</h3>
+      <div class="opts"><button data-o="a">Recuperação</button><button data-o="b">Aprovada</button><button data-o="c">Bora estudar mais</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! 5 >= 7 é falso, mas 5 >= 5 é verdadeiro." data-no="Olha de novo: 5 >= 7 é falso, mas 5 >= 5 é verdadeiro."></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="challenge">
+      <h2>Desafio: a catraca do cinema</h2>
+      <p>Escreva um programa com uma variável <code>idade</code>. Se a idade for 14 ou mais, mostre "Pode entrar no filme 🍿". Se for menor, mostre "Esse filme é para maiores de 14". Tente sozinha antes de ver a resposta.</p>
+      <button id="revelar" aria-expanded="false">Ver uma resposta possível</button>
+      <div id="resposta" hidden>
+        <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Cinema {</span>
+<span class="ln">    <span class="kw">public static void</span> main(String[] args) {</span>
+<span class="ln">        <span class="kw">int</span> idade = <span class="nu">13</span>;</span>
+<span class="ln"> </span>
+<span class="ln">        <span class="kw">if</span> (idade &gt;= <span class="nu">14</span>) {</span>
+<span class="ln">            System.out.println(<span class="st">"Pode entrar no filme 🍿"</span>);</span>
+<span class="ln">        } <span class="kw">else</span> {</span>
+<span class="ln">            System.out.println(<span class="st">"Esse filme é para maiores de 14"</span>);</span>
+<span class="ln">        }</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+        </div>
+        <p style="margin-top:1rem">Quer ir além? Adicione uma variável <code>boolean comResponsavel</code> e deixe entrar quem tem menos de 14 se estiver acompanhada, usando <code>||</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Você está em ótima companhia</h2>
+    <p>Mulheres ajudaram a inventar a programação como a conhecemos. Quando você escreve um if, está usando ideias que elas ajudaram a construir.</p>
+    <div class="company">
+      <div class="person"><strong>Ada Lovelace</strong>Escreveu, em 1843, o que é considerado o primeiro algoritmo feito para uma máquina.</div>
+      <div class="person"><strong>Grace Hopper</strong>Criou um dos primeiros compiladores e popularizou a palavra "bug" para erros.</div>
+      <div class="person"><strong>Margaret Hamilton</strong>Liderou o software que levou a Apollo 11 até a Lua.</div>
+      <div class="person"><strong>Katherine Johnson</strong>Fez cálculos de trajetória para a NASA com uma precisão que astronautas confiavam de olhos fechados.</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><div class="lessonnav"><a href="02-concatenacao-operadores.html">← Aula 02</a><a href="../index.html">Todas as aulas</a><span></span></div>Próximo passo: aprender <code>switch</code> e laços de repetição. Um passo de cada vez. 💜</div></footer>
+
+<script>
+(function(){
+  // cena principal
+  var cena=document.getElementById('cena'),bC=document.getElementById('bChuva'),bS=document.getElementById('bSol');
+  var heroLines=document.querySelectorAll('#heroCode .ln'),val=document.getElementById('heroVal'),out=document.getElementById('heroOut');
+  function setTempo(chuva){
+    cena.setAttribute('class',chuva?'chuva':'sol');
+    bC.setAttribute('aria-pressed',chuva);bS.setAttribute('aria-pressed',!chuva);
+    val.textContent=chuva?'true':'false';
+    out.textContent=chuva?'Levar guarda-chuva ☂️':'Levar óculos de sol 😎';
+    heroLines.forEach(function(l){
+      var k=l.dataset.l;l.classList.remove('on','off');
+      if(k==='a'){l.classList.add(chuva?'on':'off')}
+      if(k==='b'||k==='else'){l.classList.add(chuva?'off':'on')}
+      if(k==='if'){l.classList.add('on')}
+    });
+  }
+  bC.onclick=function(){setTempo(true)};bS.onclick=function(){setTempo(false)};
+  setTempo(true);
+
+  // notas
+  var r=document.getElementById('nota'),nv=document.getElementById('notaVal'),nn=document.getElementById('notaNum'),nr=document.getElementById('notaRes');
+  var nl=document.querySelectorAll('#notaCode .ln');
+  function nota(){
+    var n=+r.value;nv.textContent=n;nn.textContent=n;
+    var path=n>=7?['c1','a']:n>=5?['c1','c2','b']:['c1','c2','c3','c'];
+    nr.textContent=n>=7?'Aprovada! 🎉':n>=5?'Recuperação 📚':'Bora estudar mais 💪';
+    nl.forEach(function(l){var k=l.dataset.l;l.classList.remove('on','off');if(!k)return;l.classList.add(path.indexOf(k)>-1?'on':'off')});
+  }
+  r.addEventListener('input',nota);nota();
+
+  // quiz
+  document.querySelectorAll('.q').forEach(function(q){
+    var fb=q.querySelector('.fb');
+    q.querySelectorAll('.opts button').forEach(function(b){
+      b.onclick=function(){
+        q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});
+        var ok=b.dataset.o===q.dataset.right;
+        b.classList.add(ok?'right':'wrong');
+        fb.textContent=ok?fb.dataset.ok:fb.dataset.no;
+      };
+    });
+  });
+
+  // desafio
+  var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');
+  rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'};
+})();
+</script>
+</body>
+</html>
