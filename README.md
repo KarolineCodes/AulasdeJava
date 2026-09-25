@@ -7,7 +7,7 @@
 ### Programação para meninas que estão começando ✨
 
 ![Java](https://img.shields.io/badge/Java-iniciantes-6B2FD6?style=for-the-badge&logo=openjdk&logoColor=white)
-![Aulas](https://img.shields.io/badge/aulas-3-FF6B6B?style=for-the-badge&logo=bookstack&logoColor=white)
+![Aulas](https://img.shields.io/badge/aulas-4-FF6B6B?style=for-the-badge&logo=bookstack&logoColor=white)
 ![Feito com amor](https://img.shields.io/badge/feito%20com-💜-FFC845?style=for-the-badge)
 ![Nova aula](https://img.shields.io/badge/aula%20nova-todo%20dia-2FBF8F?style=for-the-badge&logo=googlecalendar&logoColor=white)
 
@@ -32,7 +32,8 @@ Este repositório reúne aulas de **Java** feitas para meninas que estão dando 
 | 01 | 📦 **Variáveis** | Tipos de dados e o padrão camelCase | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/01-variaveis.html) |
 | 02 | ➕ **Concatenação e operadores** | Contas, frases com variáveis e comentários | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/02-concatenacao-operadores.html) |
 | 03 | 🌦️ **Condicionais** | Operadores relacionais, `if`, `else if`, `else`, `switch`, `!`, `&&`, `\|\|` e `printf` | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/03-condicionais.html) |
-| 04 | ✨ *em breve* | | |
+| 04 | 🪢 **Estruturas de repetição** | `for`, `while`, `do-while`, acumuladores, `break` e `continue` | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/04-repeticao.html) |
+| 05 | ✨ *em breve* | | |
 
 ---
 
@@ -53,11 +54,13 @@ AulasdeJava/
 ├── aulas/              → uma página por aula
 │   ├── 01-variaveis.html
 │   ├── 02-concatenacao-operadores.html
-│   └── 03-condicionais.html
+│   ├── 03-condicionais.html
+│   └── 04-repeticao.html
 └── imagens/            → capas que aparecem ao compartilhar o link
     ├── capa-01-variaveis.png
     ├── capa-02-concatenacao-operadores.png
-    └── capa-03-condicionais.png
+    ├── capa-03-condicionais.png
+    └── capa-04-repeticao.png
 ```
 
 ---

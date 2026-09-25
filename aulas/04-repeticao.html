@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula 04: Estruturas de repetição em Java</title>
+<meta name="description" content="Aprenda for, while, do-while, acumuladores, break e continue em Java de um jeito animado e interativo.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aula 04: estruturas de repetição em Java 💜">
+<meta property="og:description" content="Aprenda for, while, do-while, acumuladores, break e continue em Java de um jeito animado e interativo.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-04-repeticao.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/aulas/04-repeticao.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-04-repeticao.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3FF; --surface:#FFFFFF; --ink:#2A1B4D; --soft:#5E5180;
+  --plum:#6B2FD6; --coral:#FF6B6B; --sun:#FFC845; --mint:#2FBF8F;
+  --code-bg:#241845; --code-ink:#EDE6FF; --line:#E3DBFA;
+  --kw:#FF9ECF; --str:#8FF0C8; --num:#FFD66B; --com:#9C8CC9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+    --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+  --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Fredoka","Nunito",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.5rem 0}
+section + section{border-top:2px dashed var(--line)}
+code,.code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+p code,li code,td code{background:var(--line);padding:.1em .35em;border-radius:6px;font-size:.92em}
+
+/* hero */
+.hero{padding:3rem 0 3.5rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:2rem;align-items:center}
+.hero h1 .fork{display:block;color:var(--plum)}
+.lead{font-size:1.2rem;color:var(--soft)}
+.scene{background:var(--surface);border-radius:28px;padding:1rem;border:3px solid var(--ink)}
+.scene svg{width:100%;height:auto;display:block;border-radius:18px}
+.toggle{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.toggle button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:.55rem 1rem;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--sun);color:#2A1B4D}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+/* scene states */
+#cena .r,#cena .s{transition:opacity .4s}
+#cena.sol .r{opacity:0}
+#cena.chuva .s{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #cena.chuva .drop{animation:fall 1s linear infinite}
+  #cena.chuva .drop:nth-child(2n){animation-delay:.3s}
+  #cena.chuva .drop:nth-child(3n){animation-delay:.6s}
+}
+@keyframes fall{from{transform:translateY(-10px)}to{transform:translateY(40px)}}
+
+/* code block */
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:18px;padding:1rem 0;overflow-x:auto;font-size:.95rem;line-height:1.7}
+.codebox .ln{display:block;padding:0 1.1rem;white-space:pre;border-left:5px solid transparent;transition:background .3s,border-color .3s}
+.codebox .ln.on{background:rgba(255,200,69,.16);border-left-color:var(--sun)}
+.codebox .ln.off{opacity:.45}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--com);font-style:italic}
+.console{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.95rem;overflow-x:auto}
+.console::before{content:"saída › ";color:#777}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+/* anatomia */
+.anatomy{display:grid;gap:.8rem;margin-top:1rem}
+.part{display:flex;gap:.9rem;align-items:flex-start}
+.chip{flex:none;font:600 .9rem "JetBrains Mono",monospace;padding:.3rem .6rem;border-radius:10px;background:var(--sun);color:#2A1B4D}
+.chip.c2{background:var(--mint);color:#08251B}
+.chip.c3{background:var(--coral);color:#fff}
+.chip.c4{background:var(--plum);color:#fff}
+
+/* tabela */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--surface);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:"Fredoka",sans-serif;font-weight:600;background:var(--line)}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--plum);font-size:1.1rem}
+
+/* slider */
+.slider{background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1.2rem}
+.slider label{font-weight:800;display:block;margin-bottom:.4rem}
+.slider input[type=range]{width:100%;accent-color:var(--plum)}
+.big{font:700 3rem "Fredoka",sans-serif;color:var(--plum);line-height:1}
+.result{font:600 1.3rem "Fredoka",sans-serif;margin-top:.6rem}
+
+/* erros */
+.oops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.oop{background:var(--surface);border-radius:20px;padding:1.1rem 1.2rem;border:2px solid var(--line)}
+.oop .bad,.oop .good{font-family:"JetBrains Mono",monospace;font-size:.92rem;padding:.45rem .7rem;border-radius:10px;margin:.35rem 0;overflow-x:auto;white-space:pre}
+.bad{background:rgba(255,107,107,.15);color:var(--ink)}
+.bad::before{content:"✗ ";color:var(--coral);font-weight:700}
+.good{background:rgba(47,191,143,.15);color:var(--ink)}
+.good::before{content:"✓ ";color:var(--mint);font-weight:700}
+
+/* quiz */
+.q{background:var(--surface);border-radius:22px;padding:1.2rem;margin-bottom:1.2rem;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.opts button{font:600 1rem "Nunito",sans-serif;padding:.55rem 1rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.opts button.right{background:var(--mint);color:#08251B;border-color:var(--mint)}
+.opts button.wrong{background:var(--coral);color:#fff;border-color:var(--coral)}
+.fb{margin-top:.7rem;font-weight:600;min-height:1.6em}
+
+.challenge{background:var(--plum);color:#fff;border-radius:28px;padding:1.8rem}
+.challenge p{color:#fff}
+.challenge button{font:600 1rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D;border:none;padding:.65rem 1.2rem;border-radius:999px;cursor:pointer;margin-top:.5rem}
+.challenge .codebox{margin-top:1rem}
+.company{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.person{border-left:5px solid var(--sun);padding:.3rem 0 .3rem 1rem}
+.person strong{font-family:"Fredoka",sans-serif;font-size:1.15rem;display:block}
+footer{padding:2rem 0 3rem;color:var(--soft);text-align:center}
+
+@media (max-width:820px){
+  .hero-grid,.two{grid-template-columns:1fr}
+}
+
+.form{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1rem}
+.form label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.form .check{flex-direction:row;align-items:center;gap:.5rem;align-self:end;padding-bottom:.6rem}
+.check input{width:1.3rem;height:1.3rem;accent-color:var(--plum)}
+input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.caixa{background:var(--bg);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.caixa .et{background:var(--sun);color:#2A1B4D;font:600 .85rem "JetBrains Mono",monospace;padding:.35rem .7rem;border-bottom:3px solid var(--ink);overflow-wrap:anywhere}
+.caixa .vl{padding:.6rem .7rem 0;font:600 1.35rem "Fredoka",sans-serif;overflow-wrap:anywhere;min-height:2.2rem}
+.caixa .tp{font:.8rem "JetBrains Mono",monospace;color:var(--soft);padding:0 .7rem .5rem}
+.tip{background:var(--surface);border-left:6px solid var(--sun);border-radius:0 18px 18px 0;padding:1rem 1.2rem;margin-top:1.5rem}
+.tip p:last-child{margin-bottom:0}
+.rules{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.3rem;font-weight:600}
+.rules .yes{color:var(--mint)}.rules .no{color:var(--coral)}
+.console.multi{white-space:pre-line}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.lessonnav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lessonnav a{color:var(--plum);font-weight:800}
+.num-aula{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 .95rem "Fredoka",sans-serif;padding:.25rem .8rem;border-radius:999px;margin-bottom:1rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+@media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
+.topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+/* celular */
+.hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
+.codebox,.tablewrap,.console{max-width:100%}
+img,svg{max-width:100%}
+p code,li code,td code,h3 code{overflow-wrap:anywhere}
+@media (max-width:600px){
+  .wrap{padding:0 1.1rem}
+  section{padding:2.5rem 0}
+  .hero{padding:2rem 0 2.5rem}
+  .scene{padding:.7rem;border-radius:22px}
+  .codebox{font-size:.8rem;line-height:1.65;border-radius:14px}
+  .codebox .ln{padding:0 .8rem}
+  .console{font-size:.82rem}
+  .lead{font-size:1.05rem}
+  .slider,.q,.oop{padding:1rem}
+  .challenge{padding:1.3rem;border-radius:22px}
+  .tip{padding:.9rem 1rem}
+  th,td{padding:.6rem .7rem}
+  .toggle button{flex:1 1 auto}
+  .opts button{flex:1 1 auto}
+  .lessonnav{justify-content:center}
+}
+
+.status{margin-top:.6rem;padding:.55rem .9rem;border-radius:12px;background:var(--line);font-weight:700;font-size:.95rem}
+.status.sim{background:rgba(47,191,143,.2)}.status.nao{background:rgba(255,107,107,.2)}
+#corda{width:100%;height:auto;display:block;border-radius:18px}
+@media (prefers-reduced-motion:no-preference){
+  #corda.pula #menina{animation:pulo .55s ease-out}
+  #corda.pula #cordaCima{animation:ropeA .55s linear}
+  #corda.pula #cordaBaixo{animation:ropeB .55s linear}
+  #corda.pula #sombra{animation:sombra .55s ease-out;transform-origin:200px 256px}
+}
+@keyframes pulo{0%,100%{transform:translateY(0)}45%{transform:translateY(-34px)}}
+@keyframes ropeA{0%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes ropeB{0%,100%{opacity:0}30%,70%{opacity:1}}
+@keyframes sombra{0%,100%{transform:scale(1)}45%{transform:scale(.6)}}
+.phone{margin-top:1.2rem;display:flex;justify-content:center}
+.bat{position:relative;width:min(260px,100%);height:64px;border:4px solid var(--ink);border-radius:14px;padding:5px;background:var(--surface)}
+.bat::after{content:"";position:absolute;right:-14px;top:18px;width:9px;height:20px;background:var(--ink);border-radius:0 5px 5px 0}
+.batfill{height:100%;width:25%;border-radius:8px;background:var(--sun);transition:width .5s ease,background .3s}
+.batfill.baixa{background:var(--coral)}.batfill.cheia{background:var(--mint)}
+.bat span{position:absolute;inset:0;display:grid;place-items:center;font:700 1.4rem "Fredoka",sans-serif;color:var(--ink)}
+.codebox .ln.gone{display:none}
+table.mini{min-width:0}
+/* fim aula 04 */
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="topbar"><a class="voltar" href="../index.html">🏠 Todas as aulas</a><span class="num-aula">Aula 04 de Java, 25 de setembro</span></div>
+      <h1>Faça de novo, e de novo, e de novo.<span class="fork">É para isso que servem os loops.</span></h1>
+      <p class="lead">Pular corda 5 vezes, contar até 100, carregar a bateria até encher: o computador é ótimo em repetir coisas sem reclamar. Escolha quantos pulos e aperte o play para ver o <code>for</code> trabalhando.</p>
+      <div class="slider">
+        <label for="jN">Quantos pulos? (<code>voltas</code>)</label>
+        <div class="big" id="jNVal">5</div>
+        <input type="range" id="jN" min="1" max="10" step="1" value="5">
+      </div>
+      <div class="toggle">
+        <button id="jPlay">▶ Rodar o loop</button>
+        <button id="jStep">⏭ Um passo</button>
+        <button id="jReset">↺ Recomeçar</button>
+      </div>
+    </div>
+    <div class="scene">
+      <svg id="corda" viewBox="0 0 400 300" role="img" aria-label="Ilustração de uma menina pulando corda, contando cada pulo">
+        <rect width="400" height="300" fill="#FFE3F1"/>
+        <circle cx="60" cy="60" r="26" fill="#FFC845" opacity=".8"/>
+        <g fill="#fff" opacity=".9"><circle cx="300" cy="55" r="16"/><circle cx="320" cy="48" r="20"/><circle cx="342" cy="56" r="14"/><rect x="290" y="55" width="62" height="14" rx="7"/></g>
+        <rect y="252" width="400" height="48" fill="#8ED9B5"/>
+        <ellipse id="sombra" cx="200" cy="256" rx="30" ry="6" fill="#2A1B4D" opacity=".18"/>
+        <path id="cordaCima" d="M152 205 Q200 -20 248 205" stroke="#FF6B6B" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <g id="menina">
+          <path d="M165 150 q35 -60 70 0 v45 h-70z" fill="#3B2314"/>
+          <rect x="185" y="228" width="12" height="24" rx="5" fill="#8A5A3C"/><rect x="203" y="228" width="12" height="24" rx="5" fill="#8A5A3C"/>
+          <ellipse cx="190" cy="252" rx="11" ry="5" fill="#2A1B4D"/><ellipse cx="210" cy="252" rx="11" ry="5" fill="#2A1B4D"/>
+          <path d="M178 180 h44 l14 52 h-72z" fill="#6B2FD6"/>
+          <rect x="222" y="184" width="10" height="28" rx="5" fill="#8A5A3C" transform="rotate(-40 227 186)"/>
+          <rect x="168" y="184" width="10" height="28" rx="5" fill="#8A5A3C" transform="rotate(40 173 186)"/>
+          <circle cx="200" cy="152" r="28" fill="#A26C49"/>
+          <path d="M172 146 q28 -34 56 0 q-10 -12 -28 -10 q-18 -2 -28 10z" fill="#3B2314"/>
+          <circle cx="170" cy="136" r="9" fill="#3B2314"/><circle cx="230" cy="136" r="9" fill="#3B2314"/>
+          <circle cx="190" cy="150" r="3.5" fill="#2A1B4D"/><circle cx="210" cy="150" r="3.5" fill="#2A1B4D"/>
+          <path id="boca" d="M190 164 q10 8 20 0" stroke="#2A1B4D" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="186" cy="160" r="4" fill="#FF8FA8" opacity=".6"/><circle cx="214" cy="160" r="4" fill="#FF8FA8" opacity=".6"/>
+        </g>
+        <path id="cordaBaixo" d="M152 205 Q200 330 248 205" stroke="#FF6B6B" stroke-width="5" fill="none" stroke-linecap="round" opacity="0"/>
+        <g font-family="Fredoka, Nunito, sans-serif" font-weight="700">
+          <rect x="16" y="104" width="92" height="44" rx="12" fill="#2A1B4D"/>
+          <text x="62" y="134" text-anchor="middle" fill="#FFC845" font-size="22" id="svgI">i = 1</text>
+          <text x="322" y="140" text-anchor="middle" fill="#6B2FD6" font-size="44" id="svgCont">0</text>
+          <text x="322" y="166" text-anchor="middle" fill="#6B2FD6" font-size="15">pulos</text>
+        </g>
+      </svg>
+      <div class="codebox" id="jCode" style="margin-top:1rem" aria-live="polite">
+<span class="ln"><span class="kw">int</span> voltas = <span class="nu" id="jNc">5</span>;</span>
+<span class="ln"> </span>
+<span class="ln" id="jFor"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">1</span>; i &lt;= voltas; i++) {</span>
+<span class="ln" id="jBody">    System.out.println(<span class="st">"Pulo "</span> + i + <span class="st">" 🎉"</span>);</span>
+<span class="ln">}</span>
+<span class="ln" id="jEnd">System.out.println(<span class="st">"Ufa, terminei! 😮‍💨"</span>);</span>
+      </div>
+      <div class="status" id="jStatus">Aperte o play para começar.</div>
+      <div class="console multi" id="jOut"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Por que repetir com loop?</h2>
+      <p>Imagina escrever <code>System.out.println</code> 100 vezes para contar de 1 a 100. Cansativo, né? E se mudar de ideia e quiser até 500, lá vai você escrever tudo de novo.</p>
+      <p>Com uma <strong>estrutura de repetição</strong> (ou <strong>loop</strong>), você escreve a instrução <strong>uma vez só</strong> e diz ao Java quantas vezes repetir. Mudar de 100 para 500 é trocar um número.</p>
+      <p>O Java tem três loops principais: <code>for</code>, <code>while</code> e <code>do-while</code>. Vamos ver cada um.</p>
+    </div>
+    <div>
+      <div class="oop"><h3>Sem loop 😩</h3><div class="bad">System.out.println(1);
+System.out.println(2);
+System.out.println(3);
+// ... mais 97 linhas</div></div>
+      <div class="oop" style="margin-top:1rem"><h3>Com loop 😎</h3><div class="good">for (int i = 1; i &lt;= 100; i++) {
+    System.out.println(i);
+}</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>As três partes do for</h2>
+      <p>O <code>for</code> é o loop ideal quando você <strong>sabe quantas vezes</strong> quer repetir. Dentro dos parênteses ficam três partes, separadas por ponto e vírgula:</p>
+      <div class="anatomy">
+        <div class="part"><span class="chip">int i = 1</span><span><strong>Início.</strong> Cria o contador. Roda uma vez só, antes de tudo.</span></div>
+        <div class="part"><span class="chip c2">i &lt;= 5</span><span><strong>Condição.</strong> Checada antes de cada volta. Se der <code>true</code>, repete. Se der <code>false</code>, o loop acaba.</span></div>
+        <div class="part"><span class="chip c3">i++</span><span><strong>Passo.</strong> Roda no fim de cada volta. Aqui soma 1 no contador.</span></div>
+        <div class="part"><span class="chip c4">{ ... }</span><span><strong>Corpo.</strong> O que vai ser repetido.</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>Jeitos de mexer no contador</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Código</th><th>Faz</th><th>É o mesmo que</th></tr></thead>
+          <tbody>
+            <tr><td>i++</td><td>soma 1</td><td><code>i = i + 1</code></td></tr>
+            <tr><td>i--</td><td>tira 1</td><td><code>i = i - 1</code></td></tr>
+            <tr><td>i += 2</td><td>soma 2</td><td><code>i = i + 2</code></td></tr>
+            <tr><td>i -= 5</td><td>tira 5</td><td><code>i = i - 5</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip">
+        <h3>💡 Por que "i"?</h3>
+        <p>É só uma tradição, vem de "índice". Você pode chamar de <code>volta</code>, <code>pulo</code> ou <code>contador</code>. Mas quase toda programadora usa <code>i</code>, então vale se acostumar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>While: repete enquanto for verdade</h2>
+      <p><em>While</em> quer dizer <strong>enquanto</strong>. Ele é ótimo quando você <strong>não sabe exatamente quantas vezes</strong> vai repetir, só sabe quando parar.</p>
+      <p>Pense no celular carregando: <strong>enquanto</strong> a bateria estiver abaixo de 100%, continua carregando. Escolha com quanto de bateria o celular começa e aperte para carregar. 🔋</p>
+      <div class="toggle" role="group" aria-label="Bateria inicial" id="wBtns">
+        <button data-v="0" aria-pressed="false">0%</button>
+        <button data-v="25" aria-pressed="true">25%</button>
+        <button data-v="50" aria-pressed="false">50%</button>
+        <button data-v="100" aria-pressed="false">100%</button>
+      </div>
+      <div class="toggle"><button id="wPlay">⚡ Carregar</button></div>
+      <div class="phone" aria-hidden="true">
+        <div class="bat"><div class="batfill" id="batFill"></div><span id="batTxt">25%</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="codebox" aria-live="polite">
+<span class="ln"><span class="kw">int</span> bateria = <span class="nu" id="wIni">25</span>;</span>
+<span class="ln"> </span>
+<span class="ln" id="wCond"><span class="kw">while</span> (bateria &lt; <span class="nu">100</span>) {</span>
+<span class="ln" id="wB1">    bateria += <span class="nu">25</span>;</span>
+<span class="ln" id="wB2">    System.out.println(<span class="st">"Carregando... "</span> + bateria + <span class="st">"%"</span>);</span>
+<span class="ln">}</span>
+<span class="ln" id="wEnd">System.out.println(<span class="st">"Bateria cheia! 🔋"</span>);</span>
+      </div>
+      <div class="status" id="wStatus">Escolha a bateria e aperte Carregar.</div>
+      <div class="console multi" id="wOut"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Do-while: primeiro faz, depois pergunta</h2>
+      <p>O <code>while</code> pergunta <strong>antes</strong> de rodar. Se a condição já começar falsa, ele não roda nenhuma vez.</p>
+      <p>O <code>do-while</code> é o contrário: ele <strong>faz primeiro</strong> e só pergunta no final. Por isso ele sempre roda <strong>pelo menos uma vez</strong>. É como provar a comida antes de decidir se quer mais. 🍝</p>
+      <div class="slider">
+        <label for="dIni">Valor inicial de x</label>
+        <div class="big" id="dIniVal">0</div>
+        <input type="range" id="dIni" min="0" max="5" step="1" value="0">
+        <p class="small">Coloque 3 ou mais e compare os dois resultados.</p>
+      </div>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="cm">// while: pergunta antes</span></span>
+<span class="ln"><span class="kw">int</span> x = <span class="nu dIniC">0</span>;</span>
+<span class="ln"><span class="kw">while</span> (x &lt; <span class="nu">3</span>) {</span>
+<span class="ln">    System.out.println(<span class="st">"while: "</span> + x);</span>
+<span class="ln">    x++;</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi" id="dOut1"></div>
+      <div class="codebox" style="margin-top:1rem">
+<span class="ln"><span class="cm">// do-while: faz primeiro</span></span>
+<span class="ln"><span class="kw">int</span> y = <span class="nu dIniC">0</span>;</span>
+<span class="ln"><span class="kw">do</span> {</span>
+<span class="ln">    System.out.println(<span class="st">"do-while: "</span> + y);</span>
+<span class="ln">    y++;</span>
+<span class="ln">} <span class="kw">while</span> (y &lt; <span class="nu">3</span>);</span>
+      </div>
+      <div class="console multi" id="dOut2"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Qual loop escolher?</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Loop</th><th>Use quando</th><th>Exemplo da vida</th></tr></thead>
+        <tbody>
+          <tr><td>for</td><td>você sabe quantas vezes vai repetir</td><td>fazer 10 abdominais</td></tr>
+          <tr><td>while</td><td>você sabe quando parar, mas não quantas vezes</td><td>estudar enquanto não entender a matéria</td></tr>
+          <tr><td>do-while</td><td>precisa rodar pelo menos uma vez</td><td>tocar o despertador, e repetir enquanto você não acordar</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Somando dentro do loop</h2>
+      <p>Um uso muito comum de loop é <strong>acumular</strong> valores. Você cria uma variável fora do loop começando em zero e, a cada volta, soma algo nela.</p>
+      <p>Exemplo: a Lia coloca moedas no cofrinho. No dia 1 ela põe R$ 1, no dia 2 põe R$ 2, e assim por diante. Quanto ela tem depois de 4 dias? 🐷</p>
+      <p>A tabela ao lado se chama <strong>teste de mesa</strong>: você anota o valor das variáveis a cada volta. É o melhor jeito de entender (e de achar erros em) um loop!</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">int</span> cofrinho = <span class="nu">0</span>;</span>
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> dia = <span class="nu">1</span>; dia &lt;= <span class="nu">4</span>; dia++) {</span>
+<span class="ln">    cofrinho += dia;</span>
+<span class="ln">}</span>
+<span class="ln">System.out.println(<span class="st">"Total: R$ "</span> + cofrinho);</span>
+      </div>
+      <div class="console">Total: R$ 10</div>
+      <div class="tablewrap" style="margin-top:1rem">
+        <table class="mini">
+          <thead><tr><th>Volta</th><th>dia</th><th>cofrinho antes</th><th>cofrinho depois</th></tr></thead>
+          <tbody>
+            <tr><td>1ª</td><td>1</td><td>0</td><td>1</td></tr>
+            <tr><td>2ª</td><td>2</td><td>1</td><td>3</td></tr>
+            <tr><td>3ª</td><td>3</td><td>3</td><td>6</td></tr>
+            <tr><td>4ª</td><td>4</td><td>6</td><td>10</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Break e continue: controlando o loop</h2>
+      <p>Lembra do <code>break</code> do switch? Ele também funciona nos loops: <strong>sai do loop na hora</strong>, mesmo que a condição ainda seja verdadeira.</p>
+      <p>Já o <code>continue</code> <strong>pula só aquela volta</strong> e segue para a próxima.</p>
+      <p>No exemplo, o 3 é pulado pelo <code>continue</code>, e quando chega no 5 o <code>break</code> encerra tudo.</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">1</span>; i &lt;= <span class="nu">8</span>; i++) {</span>
+<span class="ln">    <span class="kw">if</span> (i == <span class="nu">3</span>) {</span>
+<span class="ln">        <span class="kw">continue</span>; <span class="cm">// pula o 3</span></span>
+<span class="ln">    }</span>
+<span class="ln">    <span class="kw">if</span> (i == <span class="nu">5</span>) {</span>
+<span class="ln">        <span class="kw">break</span>; <span class="cm">// para no 5</span></span>
+<span class="ln">    }</span>
+<span class="ln">    System.out.println(i);</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi">1
+2
+4</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Erros que toda iniciante comete (e tudo bem)</h2>
+    <div class="oops">
+      <div class="oop"><h3>O loop infinito 😱</h3><p>Se o contador nunca muda, a condição nunca fica falsa e o programa não para. Para interromper, aperte o botão vermelho de parar da sua IDE.</p><div class="bad">int x = 0;
+while (x &lt; 5) {
+    System.out.println(x);
+}</div><div class="good">int x = 0;
+while (x &lt; 5) {
+    System.out.println(x);
+    x++;
+}</div></div>
+      <div class="oop"><h3>Ponto e vírgula depois do for</h3><p>O <code>;</code> faz o loop repetir "nada", e o bloco roda uma vez só.</p><div class="bad">for (int i = 1; i &lt;= 5; i++); {</div><div class="good">for (int i = 1; i &lt;= 5; i++) {</div></div>
+      <div class="oop"><h3>Uma volta a mais ou a menos</h3><p>Começar em 0 ou 1, usar <code>&lt;</code> ou <code>&lt;=</code>: isso muda quantas vezes o loop roda.</p><div class="bad">for (int i = 1; i &lt; 5; i++) // 4 vezes</div><div class="good">for (int i = 1; i &lt;= 5; i++) // 5 vezes</div></div>
+      <div class="oop"><h3>Zerar o acumulador dentro do loop</h3><p>Se a variável nasce dentro do loop, ela volta a zero toda volta.</p><div class="bad">for (...) {
+    int total = 0;
+    total += i;
+}</div><div class="good">int total = 0;
+for (...) {
+    total += i;
+}</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Teste o que você aprendeu</h2>
+    <div class="q" data-right="b">
+      <h3>1. Quantas vezes <code>for (int i = 0; i &lt; 3; i++)</code> repete?</h3>
+      <div class="opts"><button data-o="a">2</button><button data-o="b">3</button><button data-o="c">4</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! i vale 0, 1 e 2. No 3 a condição dá false." data-no="Quase. i vale 0, 1 e 2: são 3 voltas."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>2. O que <code>i++</code> faz?</h3>
+      <div class="opts"><button data-o="a">Dobra o i</button><button data-o="b">Soma 2 no i</button><button data-o="c">Soma 1 no i</button></div>
+      <div class="fb" aria-live="polite" data-ok="Certinho! i++ é o mesmo que i = i + 1." data-no="Não é esse. i++ soma 1: é o mesmo que i = i + 1."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>3. Com <code>int x = 10;</code>, quantas vezes <code>while (x &lt; 5)</code> roda?</h3>
+      <div class="opts"><button data-o="a">Nenhuma</button><button data-o="b">Uma</button><button data-o="c">Cinco</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! 10 &lt; 5 já é false, então o while nem começa." data-no="Olha de novo: 10 &lt; 5 já é false logo de cara, então ele não roda."></div>
+    </div>
+    <div class="q" data-right="b">
+      <h3>4. E um <code>do-while</code> com condição falsa desde o começo?</h3>
+      <div class="opts"><button data-o="a">Nenhuma vez</button><button data-o="b">Uma vez</button><button data-o="c">Para sempre</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! Ele faz primeiro e só depois pergunta." data-no="Quase. O do-while sempre roda pelo menos uma vez, porque pergunta só no final."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>5. O que acontece se você esquecer o <code>x++</code> num while que depende de x?</h3>
+      <div class="opts"><button data-o="a">Dá erro na hora</button><button data-o="b">Roda uma vez</button><button data-o="c">Loop infinito</button></div>
+      <div class="fb" aria-live="polite" data-ok="Exatamente! O x nunca muda, então a condição nunca fica falsa." data-no="Não é esse. Sem mudar o x, a condição fica true para sempre: loop infinito."></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="challenge">
+      <h2>Desafio: contagem regressiva do foguete 🚀</h2>
+      <p>Faça um loop que conte de 10 até 1, mostrando cada número, e no final mostre "Decolar! 🚀". Dica: o contador começa em 10 e diminui a cada volta. Qual operador tira 1?</p>
+      <button id="revelar" aria-expanded="false">Ver uma resposta possível</button>
+      <div id="resposta" hidden>
+        <div class="codebox">
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">10</span>; i &gt;= <span class="nu">1</span>; i--) {</span>
+<span class="ln">    System.out.println(i + <span class="st">"..."</span>);</span>
+<span class="ln">}</span>
+<span class="ln">System.out.println(<span class="st">"Decolar! 🚀"</span>);</span>
+        </div>
+        <div class="console multi">10...
+9...
+8...
+7...
+6...
+5...
+4...
+3...
+2...
+1...
+Decolar! 🚀</div>
+        <p style="margin-top:1rem">Quer ir além? Faça a mesma contagem com <code>while</code>. E depois mostre só os números pares usando <code>i -= 2</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><div class="lessonnav"><a href="03-condicionais.html">← Aula 03</a><a href="../index.html">Todas as aulas</a><span></span></div>Feito com carinho para quem está começando. 💜</div></footer>
+<script>(function(){
+  function $(i){return document.getElementById(i)}
+  function hl(ids,all){all.forEach(function(id){var e=$(id);e.classList.remove('on','off');e.classList.add(ids.indexOf(id)>-1?'on':'off')})}
+  var reduz=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- for: pular corda ---------- */
+  var N=5,i=1,fase='inicio',pulos=0,timer=null,linhas=[];
+  var J=['jFor','jBody','jEnd'],svg=$('corda');
+  function pular(){if(reduz)return;svg.classList.remove('pula');void svg.getBoundingClientRect();svg.classList.add('pula')}
+  function render(){$('svgI').textContent='i = '+i;$('svgCont').textContent=pulos;$('jOut').textContent=linhas.join('\n')}
+  function reset(){parar();N=+$('jN').value;$('jNVal').textContent=N;$('jNc').textContent=N;i=1;fase='inicio';pulos=0;linhas=[];
+    J.forEach(function(id){$(id).classList.remove('on','off')});$('jStatus').textContent='Aperte o play para começar.';$('jStatus').className='status';$('boca').setAttribute('d','M190 164 q10 8 20 0');render();btns(false)}
+  function passo(){
+    if(fase==='inicio'||fase==='inc'){
+      if(fase==='inicio'){$('jStatus').textContent='Início: int i = 1'}
+      var ok=i<=N;hl(['jFor'],J);
+      $('jStatus').textContent='Checando: '+i+' <= '+N+'? '+(ok?'true ✅ entra no loop':'false ❌ sai do loop');
+      $('jStatus').className='status '+(ok?'sim':'nao');
+      fase=ok?'cond':'fim';render();return true}
+    if(fase==='cond'){hl(['jBody'],J);pulos++;linhas.push('Pulo '+i+' 🎉');pular();$('jStatus').textContent='Corpo do loop: pulo número '+i+'!';$('jStatus').className='status';fase='corpo';render();return true}
+    if(fase==='corpo'){hl(['jFor'],J);i++;$('jStatus').textContent='Passo: i++ agora i vale '+i;$('jStatus').className='status';fase='inc';render();return true}
+    if(fase==='fim'){hl(['jEnd'],J);linhas.push('Ufa, terminei! 😮‍💨');$('jStatus').textContent='Fim! A corda pulou '+pulos+' vezes.';$('jStatus').className='status sim';$('boca').setAttribute('d','M188 162 q12 12 24 0');fase='acabou';render();return false}
+    return false}
+  function btns(rodando){$('jPlay').textContent=rodando?'⏸ Pausar':'▶ Rodar o loop';$('jPlay').setAttribute('aria-pressed',rodando)}
+  function parar(){if(timer){clearInterval(timer);timer=null}btns(false)}
+  $('jPlay').onclick=function(){
+    if(timer){parar();return}
+    if(fase==='acabou')reset();
+    btns(true);passo();timer=setInterval(function(){if(!passo())parar()},650)};
+  $('jStep').onclick=function(){parar();if(fase==='acabou')reset();passo()};
+  $('jReset').onclick=reset;
+  $('jN').addEventListener('input',reset);
+  reset();
+
+  /* ---------- while: bateria ---------- */
+  var ini=25,bat=25,wf='pronto',wt=null,wl=[],W=['wCond','wB1','wB2','wEnd'];
+  function batUi(){$('batFill').style.width=Math.min(bat,100)+'%';$('batTxt').textContent=bat+'%';$('batFill').className='batfill'+(bat>=100?' cheia':bat<30?' baixa':'')}
+  function wReset(){if(wt){clearInterval(wt);wt=null}bat=ini;wf='pronto';wl=[];$('wIni').textContent=ini;$('wOut').textContent='';W.forEach(function(id){$(id).classList.remove('on','off')});
+    $('wStatus').textContent='Escolha a bateria e aperte Carregar.';$('wStatus').className='status';batUi();
+    document.querySelectorAll('#wBtns button').forEach(function(b){b.setAttribute('aria-pressed',+b.dataset.v===ini)})}
+  function wPasso(){
+    if(wf==='pronto'||wf==='corpo'){var ok=bat<100;hl(['wCond'],W);$('wStatus').textContent='Checando: '+bat+' < 100? '+(ok?'true ✅ continua carregando':'false ❌ para de repetir');$('wStatus').className='status '+(ok?'sim':'nao');wf=ok?'cond':'fim';return true}
+    if(wf==='cond'){bat+=25;hl(['wB1','wB2'],W);wl.push('Carregando... '+bat+'%');$('wOut').textContent=wl.join('\n');$('wStatus').textContent='Corpo: bateria += 25';$('wStatus').className='status';batUi();wf='corpo';return true}
+    if(wf==='fim'){hl(['wEnd'],W);wl.push('Bateria cheia! 🔋');$('wOut').textContent=wl.join('\n');$('wStatus').textContent=wl.length===1?'O while nem entrou: a bateria já estava cheia!':'Fim! O loop rodou '+(wl.length-1)+' vezes.';$('wStatus').className='status sim';wf='acabou';return false}
+    return false}
+  $('wPlay').onclick=function(){if(wt)return;if(wf!=='pronto')wReset();wPasso();wt=setInterval(function(){if(!wPasso()){clearInterval(wt);wt=null}},650)};
+  document.querySelectorAll('#wBtns button').forEach(function(b){b.onclick=function(){ini=+b.dataset.v;wReset()}});
+  wReset();
+
+  /* ---------- while x do-while ---------- */
+  function dw(){var v=+$('dIni').value;$('dIniVal').textContent=v;document.querySelectorAll('.dIniC').forEach(function(e){e.textContent=v});
+    var a=[],x=v;while(x<3){a.push('while: '+x);x++}
+    var b=[],y=v;do{b.push('do-while: '+y);y++}while(y<3);
+    $('dOut1').textContent=a.length?a.join('\n'):'(nada, o while não rodou nenhuma vez)';$('dOut2').textContent=b.join('\n')}
+  $('dIni').addEventListener('input',dw);dw();
+})();
+
+document.querySelectorAll('.q').forEach(function(q){var fb=q.querySelector('.fb');q.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});var ok=b.dataset.o===q.dataset.right;b.classList.add(ok?'right':'wrong');fb.textContent=ok?fb.dataset.ok:fb.dataset.no}})});
+(function(){var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');if(!rev)return;rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'}})();
+</script>
+</body>
+</html>
