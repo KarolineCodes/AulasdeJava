@@ -204,6 +204,12 @@ p code,li code,td code,h3 code{overflow-wrap:anywhere}
 .bat span{position:absolute;inset:0;display:grid;place-items:center;font:700 1.4rem "Fredoka",sans-serif;color:var(--ink)}
 .codebox .ln.gone{display:none}
 table.mini{min-width:0}
+.hero-grid{align-items:start}
+#jOut{height:8.6em;overflow-y:auto;white-space:pre-line}
+#wOut{min-height:8.6em}
+#dOut1,#dOut2{min-height:5.2em}
+.status{min-height:3.1em;display:flex;align-items:center}
+@media (max-width:600px){.status{min-height:4.6em}}
 /* fim aula 04 */
 </style>
 </head>
@@ -563,7 +569,7 @@ Decolar! 🚀</div>
   var N=5,i=1,fase='inicio',pulos=0,timer=null,linhas=[];
   var J=['jFor','jBody','jEnd'],svg=$('corda');
   function pular(){if(reduz)return;svg.classList.remove('pula');void svg.getBoundingClientRect();svg.classList.add('pula')}
-  function render(){$('svgI').textContent='i = '+i;$('svgCont').textContent=pulos;$('jOut').textContent=linhas.join('\n')}
+  function render(){$('svgI').textContent='i = '+i;$('svgCont').textContent=pulos;var o=$('jOut');o.textContent=linhas.join('\n');o.scrollTop=o.scrollHeight}
   function reset(){parar();N=+$('jN').value;$('jNVal').textContent=N;$('jNc').textContent=N;i=1;fase='inicio';pulos=0;linhas=[];
     J.forEach(function(id){$(id).classList.remove('on','off')});$('jStatus').textContent='Aperte o play para começar.';$('jStatus').className='status';$('boca').setAttribute('d','M190 164 q10 8 20 0');render();btns(false)}
   function passo(){
