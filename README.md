@@ -7,7 +7,7 @@
 ### Programação para meninas que estão começando ✨
 
 ![Java](https://img.shields.io/badge/Java-iniciantes-6B2FD6?style=for-the-badge&logo=openjdk&logoColor=white)
-![Aulas](https://img.shields.io/badge/aulas-4-FF6B6B?style=for-the-badge&logo=bookstack&logoColor=white)
+![Aulas](https://img.shields.io/badge/aulas-6-FF6B6B?style=for-the-badge&logo=bookstack&logoColor=white)
 ![Feito com amor](https://img.shields.io/badge/feito%20com-💜-FFC845?style=for-the-badge)
 ![Nova aula](https://img.shields.io/badge/aula%20nova-todo%20dia-2FBF8F?style=for-the-badge&logo=googlecalendar&logoColor=white)
 
@@ -33,7 +33,9 @@ Este repositório reúne aulas de **Java** feitas para meninas que estão dando 
 | 02 | ➕ **Concatenação e operadores** | Contas, frases com variáveis e comentários | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/02-concatenacao-operadores.html) |
 | 03 | 🌦️ **Condicionais** | Operadores relacionais, `if`, `else if`, `else`, `switch`, `!`, `&&`, `\|\|` e `printf` | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/03-condicionais.html) |
 | 04 | 🪢 **Estruturas de repetição** | `for`, `while`, `do-while`, acumuladores, `break` e `continue` | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/04-repeticao.html) |
-| 05 | ✨ *em breve* | | |
+| 05 | ⌨️ **Scanner** | Ler o teclado com `nextLine`, `nextInt`, `nextDouble` e o bug do Enter | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/05-scanner.html) |
+| 06 | 🍪 **Classes e objetos** | Classes, atributos, `new` e `printf` com objetos | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/06-classes-objetos.html) |
+| 07 | ✨ *em breve* | | |
 
 ---
 
@@ -55,12 +57,16 @@ AulasdeJava/
 │   ├── 01-variaveis.html
 │   ├── 02-concatenacao-operadores.html
 │   ├── 03-condicionais.html
-│   └── 04-repeticao.html
+│   ├── 04-repeticao.html
+│   ├── 05-scanner.html
+│   └── 06-classes-objetos.html
 └── imagens/            → capas que aparecem ao compartilhar o link
     ├── capa-01-variaveis.png
     ├── capa-02-concatenacao-operadores.png
     ├── capa-03-condicionais.png
-    └── capa-04-repeticao.png
+    ├── capa-04-repeticao.png
+    ├── capa-05-scanner.png
+    └── capa-06-classes-objetos.png
 ```
 
 ---
