@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula 06: Classes e objetos em Java</title>
+<meta name="description" content="Aprenda o que são classes, atributos e objetos em Java, como usar o new e mostrar objetos com printf.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aula 06: classes e objetos, a forma e o biscoito 💜">
+<meta property="og:description" content="Aprenda o que são classes, atributos e objetos em Java, como usar o new e mostrar objetos com printf.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-06-classes-objetos.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/aulas/06-classes-objetos.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-06-classes-objetos.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3FF; --surface:#FFFFFF; --ink:#2A1B4D; --soft:#5E5180;
+  --plum:#6B2FD6; --coral:#FF6B6B; --sun:#FFC845; --mint:#2FBF8F;
+  --code-bg:#241845; --code-ink:#EDE6FF; --line:#E3DBFA;
+  --kw:#FF9ECF; --str:#8FF0C8; --num:#FFD66B; --com:#9C8CC9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+    --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+  --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Fredoka","Nunito",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.5rem 0}
+section + section{border-top:2px dashed var(--line)}
+code,.code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+p code,li code,td code{background:var(--line);padding:.1em .35em;border-radius:6px;font-size:.92em}
+
+/* hero */
+.hero{padding:3rem 0 3.5rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:2rem;align-items:center}
+.hero h1 .fork{display:block;color:var(--plum)}
+.lead{font-size:1.2rem;color:var(--soft)}
+.scene{background:var(--surface);border-radius:28px;padding:1rem;border:3px solid var(--ink)}
+.scene svg{width:100%;height:auto;display:block;border-radius:18px}
+.toggle{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.toggle button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:.55rem 1rem;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--sun);color:#2A1B4D}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+/* scene states */
+#cena .r,#cena .s{transition:opacity .4s}
+#cena.sol .r{opacity:0}
+#cena.chuva .s{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #cena.chuva .drop{animation:fall 1s linear infinite}
+  #cena.chuva .drop:nth-child(2n){animation-delay:.3s}
+  #cena.chuva .drop:nth-child(3n){animation-delay:.6s}
+}
+@keyframes fall{from{transform:translateY(-10px)}to{transform:translateY(40px)}}
+
+/* code block */
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:18px;padding:1rem 0;overflow-x:auto;font-size:.95rem;line-height:1.7}
+.codebox .ln{display:block;padding:0 1.1rem;white-space:pre;border-left:5px solid transparent;transition:background .3s,border-color .3s}
+.codebox .ln.on{background:rgba(255,200,69,.16);border-left-color:var(--sun)}
+.codebox .ln.off{opacity:.45}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--com);font-style:italic}
+.console{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.95rem;overflow-x:auto}
+.console::before{content:"saída › ";color:#777}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+/* anatomia */
+.anatomy{display:grid;gap:.8rem;margin-top:1rem}
+.part{display:flex;gap:.9rem;align-items:flex-start}
+.chip{flex:none;font:600 .9rem "JetBrains Mono",monospace;padding:.3rem .6rem;border-radius:10px;background:var(--sun);color:#2A1B4D}
+.chip.c2{background:var(--mint);color:#08251B}
+.chip.c3{background:var(--coral);color:#fff}
+.chip.c4{background:var(--plum);color:#fff}
+
+/* tabela */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--surface);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:"Fredoka",sans-serif;font-weight:600;background:var(--line)}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--plum);font-size:1.1rem}
+
+/* slider */
+.slider{background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1.2rem}
+.slider label{font-weight:800;display:block;margin-bottom:.4rem}
+.slider input[type=range]{width:100%;accent-color:var(--plum)}
+.big{font:700 3rem "Fredoka",sans-serif;color:var(--plum);line-height:1}
+.result{font:600 1.3rem "Fredoka",sans-serif;margin-top:.6rem}
+
+/* erros */
+.oops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.oop{background:var(--surface);border-radius:20px;padding:1.1rem 1.2rem;border:2px solid var(--line)}
+.oop .bad,.oop .good{font-family:"JetBrains Mono",monospace;font-size:.92rem;padding:.45rem .7rem;border-radius:10px;margin:.35rem 0;overflow-x:auto;white-space:pre}
+.bad{background:rgba(255,107,107,.15);color:var(--ink)}
+.bad::before{content:"✗ ";color:var(--coral);font-weight:700}
+.good{background:rgba(47,191,143,.15);color:var(--ink)}
+.good::before{content:"✓ ";color:var(--mint);font-weight:700}
+
+/* quiz */
+.q{background:var(--surface);border-radius:22px;padding:1.2rem;margin-bottom:1.2rem;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.opts button{font:600 1rem "Nunito",sans-serif;padding:.55rem 1rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.opts button.right{background:var(--mint);color:#08251B;border-color:var(--mint)}
+.opts button.wrong{background:var(--coral);color:#fff;border-color:var(--coral)}
+.fb{margin-top:.7rem;font-weight:600;min-height:1.6em}
+
+.challenge{background:var(--plum);color:#fff;border-radius:28px;padding:1.8rem}
+.challenge p{color:#fff}
+.challenge button{font:600 1rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D;border:none;padding:.65rem 1.2rem;border-radius:999px;cursor:pointer;margin-top:.5rem}
+.challenge .codebox{margin-top:1rem}
+.company{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.person{border-left:5px solid var(--sun);padding:.3rem 0 .3rem 1rem}
+.person strong{font-family:"Fredoka",sans-serif;font-size:1.15rem;display:block}
+footer{padding:2rem 0 3rem;color:var(--soft);text-align:center}
+
+@media (max-width:820px){
+  .hero-grid,.two{grid-template-columns:1fr}
+}
+
+.form{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1rem}
+.form label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.form .check{flex-direction:row;align-items:center;gap:.5rem;align-self:end;padding-bottom:.6rem}
+.check input{width:1.3rem;height:1.3rem;accent-color:var(--plum)}
+input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.caixa{background:var(--bg);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.caixa .et{background:var(--sun);color:#2A1B4D;font:600 .85rem "JetBrains Mono",monospace;padding:.35rem .7rem;border-bottom:3px solid var(--ink);overflow-wrap:anywhere}
+.caixa .vl{padding:.6rem .7rem 0;font:600 1.35rem "Fredoka",sans-serif;overflow-wrap:anywhere;min-height:2.2rem}
+.caixa .tp{font:.8rem "JetBrains Mono",monospace;color:var(--soft);padding:0 .7rem .5rem}
+.tip{background:var(--surface);border-left:6px solid var(--sun);border-radius:0 18px 18px 0;padding:1rem 1.2rem;margin-top:1.5rem}
+.tip p:last-child{margin-bottom:0}
+.rules{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.3rem;font-weight:600}
+.rules .yes{color:var(--mint)}.rules .no{color:var(--coral)}
+.console.multi{white-space:pre-line}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.lessonnav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lessonnav a{color:var(--plum);font-weight:800}
+.num-aula{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 .95rem "Fredoka",sans-serif;padding:.25rem .8rem;border-radius:999px;margin-bottom:1rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+@media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
+.topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+/* celular */
+.hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
+.codebox,.tablewrap,.console{max-width:100%}
+img,svg{max-width:100%}
+p code,li code,td code,h3 code{overflow-wrap:anywhere}
+@media (max-width:600px){
+  .wrap{padding:0 1.1rem}
+  section{padding:2.5rem 0}
+  .hero{padding:2rem 0 2.5rem}
+  .scene{padding:.7rem;border-radius:22px}
+  .codebox{font-size:.8rem;line-height:1.65;border-radius:14px}
+  .codebox .ln{padding:0 .8rem}
+  .console{font-size:.82rem}
+  .lead{font-size:1.05rem}
+  .slider,.q,.oop{padding:1rem}
+  .challenge{padding:1.3rem;border-radius:22px}
+  .tip{padding:.9rem 1rem}
+  th,td{padding:.6rem .7rem}
+  .toggle button{flex:1 1 auto}
+  .opts button{flex:1 1 auto}
+  .lessonnav{justify-content:center}
+}
+
+.status{margin-top:.6rem;padding:.55rem .9rem;border-radius:12px;background:var(--line);font-weight:700;font-size:.95rem}
+.status.sim{background:rgba(47,191,143,.2)}.status.nao{background:rgba(255,107,107,.2)}
+#corda{width:100%;height:auto;display:block;border-radius:18px}
+@media (prefers-reduced-motion:no-preference){
+  #corda.pula #menina{animation:pulo .55s ease-out}
+  #corda.pula #cordaCima{animation:ropeA .55s linear}
+  #corda.pula #cordaBaixo{animation:ropeB .55s linear}
+  #corda.pula #sombra{animation:sombra .55s ease-out;transform-origin:200px 256px}
+}
+@keyframes pulo{0%,100%{transform:translateY(0)}45%{transform:translateY(-34px)}}
+@keyframes ropeA{0%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes ropeB{0%,100%{opacity:0}30%,70%{opacity:1}}
+@keyframes sombra{0%,100%{transform:scale(1)}45%{transform:scale(.6)}}
+.phone{margin-top:1.2rem;display:flex;justify-content:center}
+.bat{position:relative;width:min(260px,100%);height:64px;border:4px solid var(--ink);border-radius:14px;padding:5px;background:var(--surface)}
+.bat::after{content:"";position:absolute;right:-14px;top:18px;width:9px;height:20px;background:var(--ink);border-radius:0 5px 5px 0}
+.batfill{height:100%;width:25%;border-radius:8px;background:var(--sun);transition:width .5s ease,background .3s}
+.batfill.baixa{background:var(--coral)}.batfill.cheia{background:var(--mint)}
+.bat span{position:absolute;inset:0;display:grid;place-items:center;font:700 1.4rem "Fredoka",sans-serif;color:var(--ink)}
+.codebox .ln.gone{display:none}
+table.mini{min-width:0}
+.hero-grid{align-items:start}
+#jOut{height:8.6em;overflow-y:auto;white-space:pre-line}
+#wOut{min-height:8.6em}
+#dOut1,#dOut2{min-height:5.2em}
+.status{min-height:4.4em;display:flex;align-items:center}
+@media (max-width:600px){.status{min-height:5.8em}}
+/* fim aula 04 */
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.terminal{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.92rem;height:9.5em;overflow-y:auto}
+.terminal .eu{color:#FFC845}.terminal .eu::before{content:"> ";color:#777}
+.terminal .erro{color:#FF8A8A}
+.entrada{display:flex;gap:.5rem;margin-top:.6rem}
+.entrada input{flex:1;min-width:0;font-family:"JetBrains Mono",monospace}
+.entrada button,.toggle button:disabled{cursor:pointer}
+.entrada button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--sun);color:#2A1B4D;padding:.5rem .9rem;border-radius:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.fila{margin-top:.8rem;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:.7rem}
+.fila-t{font-weight:800;font-size:.9rem;color:var(--soft);margin-bottom:.4rem}
+.fila-c{display:flex;gap:.4rem;flex-wrap:wrap;min-height:2.6rem;align-items:center}
+.tecla{display:grid;place-items:center;min-width:2.3rem;height:2.3rem;border:2px solid var(--ink);border-bottom-width:4px;border-radius:8px;background:var(--bg);font:700 1.1rem "JetBrains Mono",monospace}
+.tecla.enter{background:var(--coral);color:#fff}
+.vazia{color:var(--soft);font-style:italic}
+.vars{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.6rem;font-family:"JetBrains Mono",monospace;font-size:.95rem}
+.vars b{color:var(--plum)}
+.fname{font:600 .85rem "JetBrains Mono",monospace;color:var(--soft);margin-bottom:.3rem}
+.memoria{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.7rem;min-height:11.5rem}
+.memoria .vazio{grid-column:1/-1;display:grid;place-items:center;border:2px dashed var(--line);border-radius:16px;color:var(--soft);text-align:center;padding:1rem}
+.obj{position:relative;background:var(--bg);border:3px solid var(--ink);border-radius:16px;padding:.8rem .6rem .6rem;text-align:center}
+.obj svg{width:52px;height:52px;display:block;margin:0 auto .3rem}
+.obj .var{position:absolute;top:-.7rem;left:.6rem;background:var(--plum);color:#fff;font:600 .8rem "JetBrains Mono",monospace;padding:.1rem .5rem;border-radius:999px}
+.obj .nm{font:700 1.05rem "Fredoka",sans-serif;overflow-wrap:anywhere}
+.obj .pd{font-size:.82rem;color:var(--soft)}
+.obj .nv{color:#E0A500;letter-spacing:1px}.obj .nv span{opacity:.25}
+@media (prefers-reduced-motion:no-preference){.obj.novo{animation:surge .45s ease-out}}
+@keyframes surge{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.arquivos{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}
+.arq{background:var(--surface);border:3px solid var(--ink);border-radius:14px;padding:.7rem 1rem;font:600 1.05rem "JetBrains Mono",monospace}
+.arq small{display:block;font:600 .85rem "Nunito",sans-serif;color:var(--soft)}
+.terminal{height:11em}
+#pMain{height:12.5em;overflow-y:auto}
+.memoria{grid-template-columns:repeat(4,minmax(0,1fr));min-height:10.5rem}
+.obj .nm{font-size:.95rem}.obj .pd{font-size:.75rem}
+td code{white-space:nowrap}
+@media (max-width:600px){.memoria{grid-template-columns:repeat(2,minmax(0,1fr));min-height:21.5rem}}
+@media (max-width:600px){#pNew,#pClear{flex:1 1 100%}}
+/* fim extras 05-06 */
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="topbar"><a class="voltar" href="../index.html">🏠 Todas as aulas</a><span class="num-aula">Aula 06 de Java</span></div>
+      <h1>A classe é a forma. O objeto é o biscoito.<span class="fork">Com uma forma, você faz quantos quiser.</span></h1>
+      <p class="lead">Uma <strong>classe</strong> é um molde que diz quais informações algo tem. Cada <strong>objeto</strong> criado com esse molde tem os próprios valores. Use a fábrica de personagens abaixo: um molde, vários personagens diferentes.</p>
+      <div class="slider">
+        <div class="form" style="margin-top:0">
+          <label>nome <input type="text" id="pNome" value="Luna" maxlength="14"></label>
+          <label>nivel <input type="number" id="pNivel" value="3" min="1" max="5" step="1"></label>
+        </div>
+        <label style="margin-top:.8rem" id="pPoderLbl">poder</label>
+        <div class="toggle" role="group" aria-labelledby="pPoderLbl" id="pPoder">
+          <button data-v="voar" aria-pressed="true">🪽 voar</button>
+          <button data-v="ficar invisível" aria-pressed="false">👻 invisível</button>
+          <button data-v="super força" aria-pressed="false">💪 força</button>
+          <button data-v="falar com animais" aria-pressed="false">🐾 animais</button>
+        </div>
+      </div>
+      <div class="toggle"><button id="pNew">✨ new Personagem()</button><button id="pClear">↺ Limpar</button></div>
+    </div>
+    <div class="scene">
+      <div class="twocode">
+        <div>
+          <div class="fname">Personagem.java</div>
+          <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Personagem {</span>
+<span class="ln">    <span class="kw">String</span> nome;</span>
+<span class="ln">    <span class="kw">String</span> poder;</span>
+<span class="ln">    <span class="kw">int</span> nivel;</span>
+<span class="ln">}</span>
+          </div>
+        </div>
+      </div>
+      <div class="fname" style="margin-top:.8rem">Main.java</div>
+      <div class="codebox" id="pMain" aria-live="polite"></div>
+      <div class="fname" style="margin-top:.8rem">Memória: objetos criados</div>
+      <div class="memoria" id="pMem" aria-live="polite"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Classe e objeto: qual a diferença?</h2>
+      <p>Pense numa <strong>forma de biscoito</strong> de estrela. A forma não é um biscoito: ela só define o formato. Com ela você faz vários biscoitos, e cada um pode ter uma cobertura diferente.</p>
+      <p>Em Java é igual. A <strong>classe</strong> define quais informações existem (os <strong>atributos</strong>). O <strong>objeto</strong> é uma "coisa" de verdade, criada a partir da classe, com valores próprios.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Ideia</th><th>Na cozinha</th><th>Em Java</th></tr></thead>
+        <tbody>
+          <tr><td>Classe</td><td>a forma de estrela</td><td><code>class Personagem</code></td></tr>
+          <tr><td>Atributos</td><td>o que todo biscoito tem: sabor, cobertura</td><td><code>nome</code>, <code>poder</code>, <code>nivel</code></td></tr>
+          <tr><td>Objeto</td><td>cada biscoito pronto</td><td><code>new Personagem()</code></td></tr>
+          <tr><td>Instanciar</td><td>usar a forma para fazer um biscoito</td><td>criar um objeto com <code>new</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Criando e usando um objeto</h2>
+      <div class="anatomy">
+        <div class="part"><span class="chip">Livro</span><span>O <strong>tipo</strong> da variável é o nome da classe. Por isso classes começam com letra <strong>maiúscula</strong>.</span></div>
+        <div class="part"><span class="chip c2">meuLivro</span><span>O nome da variável que vai apontar para o objeto. Em camelCase, como sempre.</span></div>
+        <div class="part"><span class="chip c3">new Livro()</span><span>O <code>new</code> fabrica o objeto de verdade na memória.</span></div>
+        <div class="part"><span class="chip c4">meuLivro.titulo</span><span>O <strong>ponto</strong> entra no objeto para ler ou mudar um atributo. Leia como "o título do meuLivro".</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="fname">Livro.java</div>
+      <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Livro {</span>
+<span class="ln">    <span class="kw">String</span> titulo;</span>
+<span class="ln">    <span class="kw">String</span> autora;</span>
+<span class="ln">    <span class="kw">int</span> paginas;</span>
+<span class="ln">}</span>
+      </div>
+      <div class="fname" style="margin-top:.8rem">Main.java</div>
+      <div class="codebox">
+<span class="ln">Livro meuLivro = <span class="kw">new</span> Livro();</span>
+<span class="ln">meuLivro.titulo = <span class="st">"Quarto de Despejo"</span>;</span>
+<span class="ln">meuLivro.autora = <span class="st">"Carolina Maria de Jesus"</span>;</span>
+<span class="ln">meuLivro.paginas = <span class="nu">200</span>;</span>
+<span class="ln"> </span>
+<span class="ln">System.out.println(meuLivro.titulo + <span class="st">", de "</span> + meuLivro.autora);</span>
+      </div>
+      <div class="console">Quarto de Despejo, de Carolina Maria de Jesus</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Um arquivo para cada classe</h2>
+    <div class="tip">
+      <p>Em Java, cada <code>public class</code> fica no <strong>seu próprio arquivo</strong>, e o nome do arquivo precisa ser <strong>igualzinho</strong> ao nome da classe, com a mesma letra maiúscula: <code>Livro</code> mora em <code>Livro.java</code>.</p>
+      <p>A classe que tem o <code>main</code> (por exemplo, <code>Main.java</code>) é onde o programa começa. É lá que você cria os objetos. Deixe os dois arquivos na <strong>mesma pasta</strong> para um enxergar o outro.</p>
+    </div>
+    <div class="arquivos">
+      <div class="arq">📄 Livro.java <small>o molde</small></div>
+      <div class="arq">📄 Main.java <small>onde tudo acontece</small></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Lendo do teclado direto para o atributo</h2>
+      <p>Lembra do Scanner da aula 05? Você não precisa guardar o valor numa variável solta antes. Ele pode ir <strong>direto para dentro do objeto</strong>.</p>
+      <p>E o bug do Enter fantasma continua valendo: número seguido de texto pede um <code>sc.nextLine()</code> sozinho no meio.</p>
+    </div>
+    <div class="codebox">
+<span class="ln">Livro livro = <span class="kw">new</span> Livro();</span>
+<span class="ln"> </span>
+<span class="ln">System.out.println(<span class="st">"Quantas páginas?"</span>);</span>
+<span class="ln">livro.paginas = sc.nextInt();</span>
+<span class="ln">sc.nextLine(); <span class="cm">// limpa o Enter</span></span>
+<span class="ln"> </span>
+<span class="ln">System.out.println(<span class="st">"Qual o título?"</span>);</span>
+<span class="ln">livro.titulo = sc.nextLine();</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Criando objetos dentro de um loop</h2>
+      <p>Se o <code>new</code> estiver dentro do loop, <strong>cada volta cria um objeto novinho</strong>. A variável passa a apontar para o novo, e o anterior é descartado (por enquanto, já que ainda não aprendemos a guardar vários).</p>
+      <p>No exemplo, cada volta fabrica uma estrela com um brilho diferente.</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">1</span>; i &lt;= <span class="nu">3</span>; i++) {</span>
+<span class="ln">    Estrela e = <span class="kw">new</span> Estrela(); <span class="cm">// nova a cada volta</span></span>
+<span class="ln">    e.brilho = i * <span class="nu">10</span>;</span>
+<span class="ln">    System.out.println(<span class="st">"Estrela "</span> + i + <span class="st">": brilho "</span> + e.brilho);</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi">Estrela 1: brilho 10
+Estrela 2: brilho 20
+Estrela 3: brilho 30</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Mostrando objetos com printf</h2>
+    <p>Imagine que o <code>Livro</code> também tenha os atributos <code>nota</code> (double) e <code>jaLi</code> (boolean). O printf deixa a frase bem organizada. Cada marcador combina com um tipo de atributo, inclusive o <code>%b</code>, que é para <code>boolean</code>.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Marcador</th><th>Tipo</th><th>Exemplo de valor</th></tr></thead>
+        <tbody>
+          <tr><td>%s</td><td>String</td><td>Luna</td></tr>
+          <tr><td>%d</td><td>int</td><td>3</td></tr>
+          <tr><td>%.1f</td><td>double com 1 casa</td><td>8.5</td></tr>
+          <tr><td>%b</td><td>boolean</td><td>true</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="codebox" style="margin-top:1rem">
+<span class="ln">System.out.printf(<span class="st">"%s tem %d páginas. Nota: %.1f. Já li: %b\n"</span>,</span>
+<span class="ln">    livro.titulo, livro.paginas, livro.nota, livro.jaLi);</span>
+    </div>
+    <div class="console">Quarto de Despejo tem 200 páginas. Nota: 9.5. Já li: true</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Erros que toda iniciante comete (e tudo bem)</h2>
+    <div class="oops">
+      <div class="oop"><h3>Esquecer o new</h3><p>Sem o <code>new</code>, não existe objeto, só uma variável vazia.</p><div class="bad">Livro l;
+l.titulo = "Oi"; // erro</div><div class="good">Livro l = new Livro();
+l.titulo = "Oi";</div></div>
+      <div class="oop"><h3>Arquivo com outro nome</h3><p>A classe e o arquivo precisam ter o mesmo nome.</p><div class="bad">livro.java → public class Livro</div><div class="good">Livro.java → public class Livro</div></div>
+      <div class="oop"><h3>Atributo sem o objeto</h3><p>O atributo mora dentro do objeto. Use o ponto.</p><div class="bad">titulo = "Oi";</div><div class="good">meuLivro.titulo = "Oi";</div></div>
+      <div class="oop"><h3>Classe com letra minúscula</h3><p>Funciona, mas foge do padrão. Classe começa com maiúscula; variável, com minúscula.</p><div class="bad">class livro</div><div class="good">class Livro</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Teste o que você aprendeu</h2>
+    <div class="q" data-right="b">
+      <h3>1. Na comparação com a cozinha, o objeto é...</h3>
+      <div class="opts"><button data-o="a">a forma</button><button data-o="b">o biscoito</button><button data-o="c">a receita</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! A classe é a forma; cada objeto é um biscoito." data-no="Quase. A forma é a classe. O objeto é cada biscoito feito com ela."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>2. Qual palavra cria um objeto novo?</h3>
+      <div class="opts"><button data-o="a">class</button><button data-o="b">create</button><button data-o="c">new</button></div>
+      <div class="fb" aria-live="polite" data-ok="Certinho! new fabrica o objeto." data-no="Não é esse. Quem cria o objeto é o new."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>3. Como mudar o atributo <code>nome</code> do objeto <code>p1</code>?</h3>
+      <div class="opts"><button data-o="a">p1.nome = "Mel";</button><button data-o="b">nome.p1 = "Mel";</button><button data-o="c">p1(nome) = "Mel";</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! Objeto, ponto, atributo." data-no="Olha de novo: primeiro o objeto, depois o ponto, depois o atributo."></div>
+    </div>
+    <div class="q" data-right="b">
+      <h3>4. Qual marcador do printf mostra um <code>boolean</code>?</h3>
+      <div class="opts"><button data-o="a">%s</button><button data-o="b">%b</button><button data-o="c">%d</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! %b de boolean." data-no="Quase. Para boolean, o marcador é %b."></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="challenge">
+      <h2>Desafio: sua estante de livros 📚</h2>
+      <p>Crie uma classe <code>Livro</code> com quatro atributos: <code>titulo</code> (String), <code>paginas</code> (int), <code>nota</code> (double) e <code>jaLi</code> (boolean). Na classe principal, crie dois livros diferentes, dê valores para eles e mostre cada um com printf, usando <code>%s</code>, <code>%d</code>, <code>%.1f</code> e <code>%b</code>.</p>
+      <button id="revelar" aria-expanded="false">Ver uma resposta possível</button>
+      <div id="resposta" hidden>
+        <div class="fname">Livro.java</div>
+        <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Livro {</span>
+<span class="ln">    <span class="kw">String</span> titulo;</span>
+<span class="ln">    <span class="kw">int</span> paginas;</span>
+<span class="ln">    <span class="kw">double</span> nota;</span>
+<span class="ln">    <span class="kw">boolean</span> jaLi;</span>
+<span class="ln">}</span>
+        </div>
+        <div class="fname" style="margin-top:.8rem">Main.java</div>
+        <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Main {</span>
+<span class="ln">    <span class="kw">public static void</span> main(String[] args) {</span>
+<span class="ln">        Livro livro1 = <span class="kw">new</span> Livro();</span>
+<span class="ln">        livro1.titulo = <span class="st">"Pequeno Príncipe"</span>;</span>
+<span class="ln">        livro1.paginas = <span class="nu">96</span>;</span>
+<span class="ln">        livro1.nota = <span class="nu">9.5</span>;</span>
+<span class="ln">        livro1.jaLi = <span class="kw">true</span>;</span>
+<span class="ln"> </span>
+<span class="ln">        Livro livro2 = <span class="kw">new</span> Livro();</span>
+<span class="ln">        livro2.titulo = <span class="st">"Torto Arado"</span>;</span>
+<span class="ln">        livro2.paginas = <span class="nu">264</span>;</span>
+<span class="ln">        livro2.nota = <span class="nu">10.0</span>;</span>
+<span class="ln">        livro2.jaLi = <span class="kw">false</span>;</span>
+<span class="ln"> </span>
+<span class="ln">        System.out.printf(<span class="st">"%s | %d páginas | nota %.1f | já li: %b\n"</span>,</span>
+<span class="ln">            livro1.titulo, livro1.paginas, livro1.nota, livro1.jaLi);</span>
+<span class="ln">        System.out.printf(<span class="st">"%s | %d páginas | nota %.1f | já li: %b\n"</span>,</span>
+<span class="ln">            livro2.titulo, livro2.paginas, livro2.nota, livro2.jaLi);</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><div class="lessonnav"><a href="05-scanner.html">← Aula 05</a><a href="../index.html">Todas as aulas</a><span></span></div>Feito com carinho para quem está começando. 💜</div></footer>
+<script>(function(){
+  function $(i){return document.getElementById(i)}
+  var poder='voar',objs=[],MAX=4;
+  var cores={'voar':'#7CC8FF','ficar invisível':'#C9B8FF','super força':'#FF8A8A','falar com animais':'#7EDBB0'};
+  var emo={'voar':'🪽','ficar invisível':'👻','super força':'💪','falar com animais':'🐾'};
+  function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function avatar(c){return '<svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="28" fill="'+c+'"/><path d="M12 28 q18-30 36 0 v10 h-36z" fill="#3B2314"/><circle cx="30" cy="32" r="14" fill="#A26C49"/><path d="M16 28 q14-18 28 0 q-6-8-14-7 q-8-1-14 7z" fill="#3B2314"/><circle cx="25" cy="31" r="2" fill="#2A1B4D"/><circle cx="35" cy="31" r="2" fill="#2A1B4D"/><path d="M25 37 q5 4 10 0" stroke="#2A1B4D" stroke-width="2" fill="none" stroke-linecap="round"/></svg>'}
+  function render(){
+    var m=$('pMain'),h='';
+    if(!objs.length)h='<span class="ln"><span class="cm">// aperte "new Personagem()" para criar um objeto</span></span>';
+    objs.forEach(function(o,k){var v='p'+(k+1),last=k===objs.length-1?' on':'';
+      h+='<span class="ln'+last+'">Personagem '+v+' = <span class="kw">new</span> Personagem();</span>'+
+         '<span class="ln'+last+'">'+v+'.nome = <span class="st">"'+esc(o.nome)+'"</span>;</span>'+
+         '<span class="ln'+last+'">'+v+'.poder = <span class="st">"'+esc(o.poder)+'"</span>;</span>'+
+         '<span class="ln'+last+'">'+v+'.nivel = <span class="nu">'+o.nivel+'</span>;</span>';
+      if(k<objs.length-1)h+='<span class="ln"> </span>'});
+    m.innerHTML=h;m.scrollTop=m.scrollHeight;
+    var mem=$('pMem');mem.innerHTML='';
+    if(!objs.length){mem.innerHTML='<div class="vazio">Nenhum objeto ainda. A classe é só o molde!</div>'}
+    objs.forEach(function(o,k){var d=document.createElement('div');d.className='obj'+(k===objs.length-1?' novo':'');
+      d.innerHTML='<div class="var">p'+(k+1)+'</div>'+avatar(cores[o.poder])+'<div class="nm">'+esc(o.nome||'(sem nome)')+'</div><div class="pd">'+emo[o.poder]+' '+esc(o.poder)+'</div><div class="nv" aria-label="nível '+o.nivel+'">'+'★'.repeat(o.nivel)+'<span>'+'★'.repeat(5-o.nivel)+'</span></div>';
+      mem.appendChild(d)});
+    $('pNew').disabled=objs.length>=MAX;$('pNew').textContent=objs.length>=MAX?'🧠 Memória cheia':'✨ new Personagem()';
+  }
+  document.querySelectorAll('#pPoder button').forEach(function(b){b.onclick=function(){poder=b.dataset.v;document.querySelectorAll('#pPoder button').forEach(function(x){x.setAttribute('aria-pressed',x===b)})}});
+  $('pNew').onclick=function(){if(objs.length>=MAX)return;var n=parseInt($('pNivel').value,10);if(isNaN(n))n=1;n=Math.max(1,Math.min(5,n));
+    objs.push({nome:$('pNome').value.trim(),poder:poder,nivel:n});
+    var nomes=['Mel','Cora','Iris','Bia','Nina'];$('pNome').value=nomes[objs.length%nomes.length];render()};
+  $('pClear').onclick=function(){objs=[];render()};
+  render();
+})();
+
+document.querySelectorAll('.q').forEach(function(q){var fb=q.querySelector('.fb');q.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});var ok=b.dataset.o===q.dataset.right;b.classList.add(ok?'right':'wrong');fb.textContent=ok?fb.dataset.ok:fb.dataset.no}})});
+(function(){var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');if(!rev)return;rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'}})();
+</script>
+</body>
+</html>
