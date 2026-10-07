@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula 08: Arrays em Java</title>
+<meta name="description" content="Aprenda a criar, acessar e percorrer arrays em Java com for, length e Scanner.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aula 08: arrays, a fileira de caixinhas 💜">
+<meta property="og:description" content="Aprenda a criar, acessar e percorrer arrays em Java com for, length e Scanner.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-08-arrays.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/aulas/08-arrays.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-08-arrays.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3FF; --surface:#FFFFFF; --ink:#2A1B4D; --soft:#5E5180;
+  --plum:#6B2FD6; --coral:#FF6B6B; --sun:#FFC845; --mint:#2FBF8F;
+  --code-bg:#241845; --code-ink:#EDE6FF; --line:#E3DBFA;
+  --kw:#FF9ECF; --str:#8FF0C8; --num:#FFD66B; --com:#9C8CC9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+    --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+  --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Fredoka","Nunito",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.5rem 0}
+section + section{border-top:2px dashed var(--line)}
+code,.code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+p code,li code,td code{background:var(--line);padding:.1em .35em;border-radius:6px;font-size:.92em}
+
+/* hero */
+.hero{padding:3rem 0 3.5rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:2rem;align-items:center}
+.hero h1 .fork{display:block;color:var(--plum)}
+.lead{font-size:1.2rem;color:var(--soft)}
+.scene{background:var(--surface);border-radius:28px;padding:1rem;border:3px solid var(--ink)}
+.scene svg{width:100%;height:auto;display:block;border-radius:18px}
+.toggle{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.toggle button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:.55rem 1rem;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--sun);color:#2A1B4D}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+/* scene states */
+#cena .r,#cena .s{transition:opacity .4s}
+#cena.sol .r{opacity:0}
+#cena.chuva .s{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #cena.chuva .drop{animation:fall 1s linear infinite}
+  #cena.chuva .drop:nth-child(2n){animation-delay:.3s}
+  #cena.chuva .drop:nth-child(3n){animation-delay:.6s}
+}
+@keyframes fall{from{transform:translateY(-10px)}to{transform:translateY(40px)}}
+
+/* code block */
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:18px;padding:1rem 0;overflow-x:auto;font-size:.95rem;line-height:1.7}
+.codebox .ln{display:block;padding:0 1.1rem;white-space:pre;border-left:5px solid transparent;transition:background .3s,border-color .3s}
+.codebox .ln.on{background:rgba(255,200,69,.16);border-left-color:var(--sun)}
+.codebox .ln.off{opacity:.45}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--com);font-style:italic}
+.console{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.95rem;overflow-x:auto}
+.console::before{content:"saída › ";color:#777}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+/* anatomia */
+.anatomy{display:grid;gap:.8rem;margin-top:1rem}
+.part{display:flex;gap:.9rem;align-items:flex-start}
+.chip{flex:none;font:600 .9rem "JetBrains Mono",monospace;padding:.3rem .6rem;border-radius:10px;background:var(--sun);color:#2A1B4D}
+.chip.c2{background:var(--mint);color:#08251B}
+.chip.c3{background:var(--coral);color:#fff}
+.chip.c4{background:var(--plum);color:#fff}
+
+/* tabela */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--surface);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:"Fredoka",sans-serif;font-weight:600;background:var(--line)}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--plum);font-size:1.1rem}
+
+/* slider */
+.slider{background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1.2rem}
+.slider label{font-weight:800;display:block;margin-bottom:.4rem}
+.slider input[type=range]{width:100%;accent-color:var(--plum)}
+.big{font:700 3rem "Fredoka",sans-serif;color:var(--plum);line-height:1}
+.result{font:600 1.3rem "Fredoka",sans-serif;margin-top:.6rem}
+
+/* erros */
+.oops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.oop{background:var(--surface);border-radius:20px;padding:1.1rem 1.2rem;border:2px solid var(--line)}
+.oop .bad,.oop .good{font-family:"JetBrains Mono",monospace;font-size:.92rem;padding:.45rem .7rem;border-radius:10px;margin:.35rem 0;overflow-x:auto;white-space:pre}
+.bad{background:rgba(255,107,107,.15);color:var(--ink)}
+.bad::before{content:"✗ ";color:var(--coral);font-weight:700}
+.good{background:rgba(47,191,143,.15);color:var(--ink)}
+.good::before{content:"✓ ";color:var(--mint);font-weight:700}
+
+/* quiz */
+.q{background:var(--surface);border-radius:22px;padding:1.2rem;margin-bottom:1.2rem;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.opts button{font:600 1rem "Nunito",sans-serif;padding:.55rem 1rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.opts button.right{background:var(--mint);color:#08251B;border-color:var(--mint)}
+.opts button.wrong{background:var(--coral);color:#fff;border-color:var(--coral)}
+.fb{margin-top:.7rem;font-weight:600;min-height:1.6em}
+
+.challenge{background:var(--plum);color:#fff;border-radius:28px;padding:1.8rem}
+.challenge p{color:#fff}
+.challenge button{font:600 1rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D;border:none;padding:.65rem 1.2rem;border-radius:999px;cursor:pointer;margin-top:.5rem}
+.challenge .codebox{margin-top:1rem}
+.company{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.person{border-left:5px solid var(--sun);padding:.3rem 0 .3rem 1rem}
+.person strong{font-family:"Fredoka",sans-serif;font-size:1.15rem;display:block}
+footer{padding:2rem 0 3rem;color:var(--soft);text-align:center}
+
+@media (max-width:820px){
+  .hero-grid,.two{grid-template-columns:1fr}
+}
+
+.form{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1rem}
+.form label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.form .check{flex-direction:row;align-items:center;gap:.5rem;align-self:end;padding-bottom:.6rem}
+.check input{width:1.3rem;height:1.3rem;accent-color:var(--plum)}
+input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.caixa{background:var(--bg);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.caixa .et{background:var(--sun);color:#2A1B4D;font:600 .85rem "JetBrains Mono",monospace;padding:.35rem .7rem;border-bottom:3px solid var(--ink);overflow-wrap:anywhere}
+.caixa .vl{padding:.6rem .7rem 0;font:600 1.35rem "Fredoka",sans-serif;overflow-wrap:anywhere;min-height:2.2rem}
+.caixa .tp{font:.8rem "JetBrains Mono",monospace;color:var(--soft);padding:0 .7rem .5rem}
+.tip{background:var(--surface);border-left:6px solid var(--sun);border-radius:0 18px 18px 0;padding:1rem 1.2rem;margin-top:1.5rem}
+.tip p:last-child{margin-bottom:0}
+.rules{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.3rem;font-weight:600}
+.rules .yes{color:var(--mint)}.rules .no{color:var(--coral)}
+.console.multi{white-space:pre-line}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.lessonnav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lessonnav a{color:var(--plum);font-weight:800}
+.num-aula{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 .95rem "Fredoka",sans-serif;padding:.25rem .8rem;border-radius:999px;margin-bottom:1rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+@media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
+.topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.form .check{min-width:0;flex-wrap:wrap}.form .check code{overflow-wrap:anywhere}
+/* celular */
+.hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
+.codebox,.tablewrap,.console{max-width:100%}
+img,svg{max-width:100%}
+p code,li code,td code,h3 code{overflow-wrap:anywhere}
+@media (max-width:600px){
+  .wrap{padding:0 1.1rem}
+  section{padding:2.5rem 0}
+  .hero{padding:2rem 0 2.5rem}
+  .scene{padding:.7rem;border-radius:22px}
+  .codebox{font-size:.8rem;line-height:1.65;border-radius:14px}
+  .codebox .ln{padding:0 .8rem}
+  .console{font-size:.82rem}
+  .lead{font-size:1.05rem}
+  .slider,.q,.oop{padding:1rem}
+  .challenge{padding:1.3rem;border-radius:22px}
+  .tip{padding:.9rem 1rem}
+  th,td{padding:.6rem .7rem}
+  .toggle button{flex:1 1 auto}
+  .opts button{flex:1 1 auto}
+  .lessonnav{justify-content:center}
+}
+
+.status{margin-top:.6rem;padding:.55rem .9rem;border-radius:12px;background:var(--line);font-weight:700;font-size:.95rem}
+.status.sim{background:rgba(47,191,143,.2)}.status.nao{background:rgba(255,107,107,.2)}
+#corda{width:100%;height:auto;display:block;border-radius:18px}
+@media (prefers-reduced-motion:no-preference){
+  #corda.pula #menina{animation:pulo .55s ease-out}
+  #corda.pula #cordaCima{animation:ropeA .55s linear}
+  #corda.pula #cordaBaixo{animation:ropeB .55s linear}
+  #corda.pula #sombra{animation:sombra .55s ease-out;transform-origin:200px 256px}
+}
+@keyframes pulo{0%,100%{transform:translateY(0)}45%{transform:translateY(-34px)}}
+@keyframes ropeA{0%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes ropeB{0%,100%{opacity:0}30%,70%{opacity:1}}
+@keyframes sombra{0%,100%{transform:scale(1)}45%{transform:scale(.6)}}
+.phone{margin-top:1.2rem;display:flex;justify-content:center}
+.bat{position:relative;width:min(260px,100%);height:64px;border:4px solid var(--ink);border-radius:14px;padding:5px;background:var(--surface)}
+.bat::after{content:"";position:absolute;right:-14px;top:18px;width:9px;height:20px;background:var(--ink);border-radius:0 5px 5px 0}
+.batfill{height:100%;width:25%;border-radius:8px;background:var(--sun);transition:width .5s ease,background .3s}
+.batfill.baixa{background:var(--coral)}.batfill.cheia{background:var(--mint)}
+.bat span{position:absolute;inset:0;display:grid;place-items:center;font:700 1.4rem "Fredoka",sans-serif;color:var(--ink)}
+.codebox .ln.gone{display:none}
+table.mini{min-width:0}
+.hero-grid{align-items:start}
+#jOut{height:8.6em;overflow-y:auto;white-space:pre-line}
+#wOut{min-height:8.6em}
+#dOut1,#dOut2{min-height:5.2em}
+.status{min-height:4.4em;display:flex;align-items:center}
+@media (max-width:600px){.status{min-height:5.8em}}
+/* fim aula 04 */
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.terminal{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.92rem;height:9.5em;overflow-y:auto}
+.terminal .eu{color:#FFC845}.terminal .eu::before{content:"> ";color:#777}
+.terminal .erro{color:#FF8A8A}
+.entrada{display:flex;gap:.5rem;margin-top:.6rem}
+.entrada input{flex:1;min-width:0;font-family:"JetBrains Mono",monospace}
+.entrada button,.toggle button:disabled{cursor:pointer}
+.entrada button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--sun);color:#2A1B4D;padding:.5rem .9rem;border-radius:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.fila{margin-top:.8rem;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:.7rem}
+.fila-t{font-weight:800;font-size:.9rem;color:var(--soft);margin-bottom:.4rem}
+.fila-c{display:flex;gap:.4rem;flex-wrap:wrap;min-height:2.6rem;align-items:center}
+.tecla{display:grid;place-items:center;min-width:2.3rem;height:2.3rem;border:2px solid var(--ink);border-bottom-width:4px;border-radius:8px;background:var(--bg);font:700 1.1rem "JetBrains Mono",monospace}
+.tecla.enter{background:var(--coral);color:#fff}
+.vazia{color:var(--soft);font-style:italic}
+.vars{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.6rem;font-family:"JetBrains Mono",monospace;font-size:.95rem}
+.vars b{color:var(--plum)}
+.fname{font:600 .85rem "JetBrains Mono",monospace;color:var(--soft);margin-bottom:.3rem}
+.memoria{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.7rem;min-height:11.5rem}
+.memoria .vazio{grid-column:1/-1;display:grid;place-items:center;border:2px dashed var(--line);border-radius:16px;color:var(--soft);text-align:center;padding:1rem}
+.obj{position:relative;background:var(--bg);border:3px solid var(--ink);border-radius:16px;padding:.8rem .6rem .6rem;text-align:center}
+.obj svg{width:52px;height:52px;display:block;margin:0 auto .3rem}
+.obj .var{position:absolute;top:-.7rem;left:.6rem;background:var(--plum);color:#fff;font:600 .8rem "JetBrains Mono",monospace;padding:.1rem .5rem;border-radius:999px}
+.obj .nm{font:700 1.05rem "Fredoka",sans-serif;overflow-wrap:anywhere}
+.obj .pd{font-size:.82rem;color:var(--soft)}
+.obj .nv{color:#E0A500;letter-spacing:1px}.obj .nv span{opacity:.25}
+@media (prefers-reduced-motion:no-preference){.obj.novo{animation:surge .45s ease-out}}
+@keyframes surge{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.arquivos{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}
+.arq{background:var(--surface);border:3px solid var(--ink);border-radius:14px;padding:.7rem 1rem;font:600 1.05rem "JetBrains Mono",monospace}
+.arq small{display:block;font:600 .85rem "Nunito",sans-serif;color:var(--soft)}
+.terminal{height:11em}
+#pMain{height:12.5em;overflow-y:auto}
+.memoria{grid-template-columns:repeat(4,minmax(0,1fr));min-height:10.5rem}
+.obj .nm{font-size:.95rem}.obj .pd{font-size:.75rem}
+td code{white-space:nowrap}
+@media (max-width:600px){.memoria{grid-template-columns:repeat(2,minmax(0,1fr));min-height:21.5rem}}
+@media (max-width:600px){#pNew,#pClear{flex:1 1 100%}}
+/* fim extras 05-06 */
+
+.tiles{display:flex;flex-wrap:wrap;gap:.35rem;min-height:3.6rem;align-content:flex-start}
+.tile{display:flex;flex-direction:column;align-items:center;min-width:2.1rem;border:2px solid var(--ink);border-radius:10px;background:var(--bg);padding:.2rem .3rem .15rem;transition:background .25s,transform .25s}
+.tile b{font:700 1.15rem "JetBrains Mono",monospace;line-height:1.3}
+.tile i{font:600 .7rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.tile.esp b{color:var(--soft)}
+.tile.hl{background:var(--sun);color:#2A1B4D;transform:translateY(-4px)}.tile.hl i{color:#2A1B4D}
+.tile.fantasma,.gaveta.fantasma{border-style:dashed;border-color:var(--coral);color:var(--coral);background:transparent}
+.metodos{margin-top:.8rem}.metodos button{font-family:"JetBrains Mono",monospace;font-size:.85rem;padding:.4rem .7rem}
+.params{display:grid;gap:.6rem;margin-top:.8rem;min-height:4.8rem}
+.params label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.params input[type=range]{accent-color:var(--plum)}
+.console.erro{color:#FF8A8A}
+.valores{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin-top:1rem}
+.valores label{font:600 .75rem "JetBrains Mono",monospace;display:flex;flex-direction:column;gap:.25rem;color:var(--soft)}
+.valores input{text-align:center;padding:.5rem .2rem}
+.gavetas{position:relative;display:flex;gap:.5rem;padding-bottom:1.9rem;min-height:6.2rem;flex-wrap:nowrap}
+.gaveta{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:12px;background:var(--bg);height:4.2rem;transition:background .3s,transform .3s}
+.gaveta b{font:700 1.4rem "Fredoka",sans-serif;overflow-wrap:anywhere;text-align:center;line-height:1.1}
+.gaveta.txt b{font-size:1rem}
+.gaveta i{font:600 .75rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.gaveta.feita{background:rgba(47,191,143,.22)}
+.gaveta.atual{background:var(--sun);color:#2A1B4D;transform:translateY(-5px)}.gaveta.atual i{color:#2A1B4D}
+.gaveta.fantasma.atual{background:transparent;color:var(--coral)}
+.seta{position:absolute;bottom:0;left:calc((100% - 2rem) / 5 * var(--x,0) + .5rem * var(--x,0) + (100% - 2rem) / 10);transform:translateX(-50%);font:700 1rem "JetBrains Mono",monospace;color:var(--plum);transition:left .3s}
+.seta::before{content:"▲ "}
+#aOut{height:8.6em;overflow-y:auto}
+@media (max-width:600px){.valores{grid-template-columns:repeat(5,minmax(0,1fr))}.gaveta b{font-size:1.1rem}}
+/* fim extras 07-08 */
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="topbar"><a class="voltar" href="../index.html">🏠 Todas as aulas</a><span class="num-aula">Aula 08 de Java, 29 de setembro</span></div>
+      <h1>Um array é uma fileira de caixinhas.<span class="fork">Todas com o mesmo nome, cada uma com seu número.</span></h1>
+      <p class="lead">Na aula 01, cada variável guardava um valor só. E se você precisar guardar os pontos de 5 fases de um jogo? Em vez de 5 variáveis, você cria <strong>um array</strong> com 5 posições. Mude os valores e aperte o play para o <code>for</code> passear pelas caixinhas.</p>
+      <div class="valores" id="aVals"></div>
+      <div class="toggle">
+        <button id="aPlay">▶ Percorrer o array</button>
+        <button id="aStep">⏭ Um passo</button>
+        <button id="aReset">↺ Recomeçar</button>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="fname">int[] pontos</div>
+      <div class="gavetas" id="aBoxes" aria-hidden="true"></div>
+      <div class="vars"><span>i = <b id="aI">?</b></span><span>soma = <b id="aSoma">0</b></span></div>
+      <div class="codebox" style="margin-top:.8rem" aria-live="polite">
+<span class="ln" id="a0"><span class="kw">int</span>[] pontos = {<span id="aLit"></span>};</span>
+<span class="ln" id="a1"><span class="kw">int</span> soma = <span class="nu">0</span>;</span>
+<span class="ln"> </span>
+<span class="ln" id="a2"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">0</span>; i &lt; pontos.length; i++) {</span>
+<span class="ln" id="a3">    System.out.println(<span class="st">"Fase "</span> + (i + <span class="nu">1</span>) + <span class="st">": "</span> + pontos[i]);</span>
+<span class="ln" id="a4">    soma += pontos[i];</span>
+<span class="ln">}</span>
+<span class="ln" id="a5">System.out.println(<span class="st">"Total: "</span> + soma);</span>
+      </div>
+      <div class="status" id="aStatus"></div>
+      <div class="console multi" id="aOut"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Criando um array</h2>
+      <p>Os colchetes <code>[]</code> depois do tipo avisam: "isto não é uma caixinha só, é uma fileira delas". Todas as caixinhas guardam o <strong>mesmo tipo</strong> de dado.</p>
+      <p>Tem dois jeitos de criar:</p>
+      <div class="anatomy">
+        <div class="part"><span class="chip">{ }</span><span><strong>Já com os valores</strong>, quando você sabe o que vai dentro. O tamanho é a quantidade de valores.</span></div>
+        <div class="part"><span class="chip c2">new int[5]</span><span><strong>Vazio, só com o tamanho</strong>, para preencher depois (por exemplo, com o Scanner). As caixinhas começam com 0 (em <code>String</code>, começam com <code>null</code>).</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="cm">// jeito 1: já com os valores</span></span>
+<span class="ln"><span class="kw">String</span>[] frutas = {<span class="st">"manga"</span>, <span class="st">"caju"</span>, <span class="st">"uva"</span>};</span>
+<span class="ln"> </span>
+<span class="ln"><span class="cm">// jeito 2: vazio, com 4 posições</span></span>
+<span class="ln"><span class="kw">double</span>[] alturas = <span class="kw">new double</span>[<span class="nu">4</span>];</span>
+<span class="ln">alturas[<span class="nu">0</span>] = <span class="nu">1.62</span>;</span>
+<span class="ln">alturas[<span class="nu">1</span>] = <span class="nu">1.55</span>;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Abrindo uma caixinha pelo índice</h2>
+      <p>Igual às letras da String na aula 07, cada caixinha tem um <strong>índice que começa no 0</strong>. Para usar um valor, escreva o nome do array e o índice entre colchetes: <code>frutas[0]</code>.</p>
+      <p>O <code>frutas.length</code> diz quantas caixinhas existem. Então a última é sempre <code>frutas[frutas.length - 1]</code>. Escolha um índice e veja o que acontece quando você passa do limite. 👀</p>
+      <div class="slider">
+        <label for="xI">Índice</label>
+        <div class="big" id="xIv">0</div>
+        <input type="range" id="xI" min="0" max="4" step="1" value="0">
+      </div>
+    </div>
+    <div>
+      <div class="gavetas" id="xBoxes" aria-hidden="true"></div>
+      <div class="codebox" style="margin-top:.8rem">
+<span class="ln"><span class="kw">String</span>[] frutas = {<span class="st">"manga"</span>, <span class="st">"caju"</span>, <span class="st">"uva"</span>};</span>
+<span class="ln">System.out.println(frutas[<span class="nu" id="xIc">0</span>]);</span>
+      </div>
+      <div class="console" id="xOut"></div>
+      <div class="status" id="xExp"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>length: com ou sem parênteses?</h2>
+    <div class="tip">
+      <p>Essa confunde todo mundo! Na <strong>String</strong>, <code>length()</code> é um método e leva parênteses. No <strong>array</strong>, <code>length</code> é uma informação fixa e vai <strong>sem parênteses</strong>.</p>
+      <div class="codebox"><span class="ln">nome.length()     <span class="cm">// String: com parênteses</span></span><span class="ln">frutas.length     <span class="cm">// array: sem parênteses</span></span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Mudando o que tem na caixinha</h2>
+      <p>Dá para trocar o valor de uma posição a qualquer momento, usando o índice e o <code>=</code>, como numa variável normal.</p>
+      <p>O que <strong>não</strong> dá é mudar o <strong>tamanho</strong>. Um array criado com 3 posições terá 3 posições para sempre.</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">String</span>[] frutas = {<span class="st">"manga"</span>, <span class="st">"caju"</span>, <span class="st">"uva"</span>};</span>
+<span class="ln">frutas[<span class="nu">1</span>] = <span class="st">"pitanga"</span>;</span>
+<span class="ln">System.out.println(frutas[<span class="nu">1</span>]);</span>
+      </div>
+      <div class="console">pitanga</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Enchendo o array com o Scanner</h2>
+      <p>Juntando tudo: um array vazio, um <code>for</code> e o Scanner. A cada volta, o <code>i</code> diz em qual caixinha o valor digitado vai entrar.</p>
+      <p>Depois de cheio, você pode percorrer o array em qualquer ordem. Lembra da contagem regressiva do foguete na aula 04? A mesma ideia serve para andar pelas caixinhas de trás para frente. 😉</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">int</span>[] idades = <span class="kw">new int</span>[<span class="nu">3</span>];</span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">0</span>; i &lt; idades.length; i++) {</span>
+<span class="ln">    System.out.print(<span class="st">"Idade da amiga "</span> + (i + <span class="nu">1</span>) + <span class="st">": "</span>);</span>
+<span class="ln">    idades[i] = sc.nextInt();</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi">Idade da amiga 1: 15
+Idade da amiga 2: 16
+Idade da amiga 3: 14</div>
+      <p class="small">Repare no <code>print</code> sem <code>ln</code>: o cursor fica na mesma linha da pergunta, e a resposta aparece do lado.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Erros que toda iniciante comete (e tudo bem)</h2>
+    <div class="oops">
+      <div class="oop"><h3>Passar do último índice</h3><p>Num array de 3, os índices são 0, 1 e 2. O índice 3 quebra o programa com <code>ArrayIndexOutOfBoundsException</code>.</p><div class="bad">frutas[3]</div><div class="good">frutas[frutas.length - 1]</div></div>
+      <div class="oop"><h3>Usar &lt;= no for</h3><p>Com <code>&lt;=</code>, o loop tenta abrir uma caixinha a mais.</p><div class="bad">i &lt;= frutas.length</div><div class="good">i &lt; frutas.length</div></div>
+      <div class="oop"><h3>Parênteses no length</h3><p>No array, é sem parênteses.</p><div class="bad">frutas.length()</div><div class="good">frutas.length</div></div>
+      <div class="oop"><h3>Misturar tipos</h3><p>Todas as caixinhas têm o mesmo tipo.</p><div class="bad">int[] x = {1, "dois", 3};</div><div class="good">int[] x = {1, 2, 3};</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Teste o que você aprendeu</h2>
+    <div class="q" data-right="a">
+      <h3>1. Em <code>int[] n = {4, 8, 15};</code>, quanto vale <code>n[1]</code>?</h3>
+      <div class="opts"><button data-o="a">8</button><button data-o="b">4</button><button data-o="c">15</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! O índice 0 é o 4, e o índice 1 é o 8." data-no="Quase. O índice começa em 0, então n[1] é o segundo valor: 8."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>2. E quanto vale <code>n.length</code>?</h3>
+      <div class="opts"><button data-o="a">2</button><button data-o="b">15</button><button data-o="c">3</button></div>
+      <div class="fb" aria-live="polite" data-ok="Certinho! São 3 caixinhas." data-no="Não é esse. length é a quantidade de caixinhas: 3."></div>
+    </div>
+    <div class="q" data-right="b">
+      <h3>3. Como pegar o último valor de qualquer array <code>v</code>?</h3>
+      <div class="opts"><button data-o="a">v[v.length]</button><button data-o="b">v[v.length - 1]</button><button data-o="c">v[last]</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! O último índice é sempre length - 1." data-no="Olha de novo: v[v.length] passa do limite. O último é v[v.length - 1]."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>4. Com que valor começam as caixinhas de <code>new int[4]</code>?</h3>
+      <div class="opts"><button data-o="a">0</button><button data-o="b">4</button><button data-o="c">vazio, dá erro</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! Arrays de números começam com zeros." data-no="Quase. Em arrays de número, todas as caixinhas começam com 0."></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="challenge">
+      <h2>Desafio: o dia mais quente da semana 🌡️</h2>
+      <p>Crie um array com as temperaturas dos 7 dias da semana, por exemplo <code>{24, 29, 31, 27, 33, 30, 26}</code>. Usando um <code>for</code>, descubra qual foi a <strong>maior temperatura</strong> e em qual dia ela aconteceu. Dica: guarde numa variável a maior temperatura que você achou até agora e compare com cada caixinha.</p>
+      <button id="revelar" aria-expanded="false">Ver uma resposta possível</button>
+      <div id="resposta" hidden>
+        <div class="codebox">
+<span class="ln"><span class="kw">int</span>[] temps = {<span class="nu">24</span>, <span class="nu">29</span>, <span class="nu">31</span>, <span class="nu">27</span>, <span class="nu">33</span>, <span class="nu">30</span>, <span class="nu">26</span>};</span>
+<span class="ln"><span class="kw">int</span> maior = temps[<span class="nu">0</span>];</span>
+<span class="ln"><span class="kw">int</span> dia = <span class="nu">0</span>;</span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">1</span>; i &lt; temps.length; i++) {</span>
+<span class="ln">    <span class="kw">if</span> (temps[i] &gt; maior) {</span>
+<span class="ln">        maior = temps[i];</span>
+<span class="ln">        dia = i;</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+<span class="ln">System.out.println(<span class="st">"Maior: "</span> + maior + <span class="st">"°C no dia "</span> + (dia + <span class="nu">1</span>));</span>
+        </div>
+        <div class="console">Maior: 33°C no dia 5</div>
+        <p style="margin-top:1rem">Quer ir além? Descubra também a menor temperatura e a média da semana (com <code>double</code> e printf!).</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><div class="lessonnav"><a href="07-strings.html">← Aula 07</a><a href="../index.html">Todas as aulas</a><a href="09-metodos.html">Aula 09 →</a></div>Feito com carinho para quem está começando. 💜</div></footer>
+<script>(function(){
+  function $(i){return document.getElementById(i)}
+  var vals=[3,7,2,9,5],i=0,fase='inicio',soma=0,linhas=[],timer=null,A=['a0','a1','a2','a3','a4','a5'];
+  var vc=$('aVals');
+  vals.forEach(function(v,k){var l=document.createElement('label');l.innerHTML='pontos['+k+']<input type="number" min="0" max="99" step="1" value="'+v+'">';vc.appendChild(l);
+    l.querySelector('input').addEventListener('input',function(e){var n=parseInt(e.target.value,10);vals[k]=isNaN(n)?0:Math.max(-99,Math.min(999,n));reset()})});
+  function hl(ids){A.forEach(function(id){var e=$(id);e.classList.remove('on','off');e.classList.add(ids.indexOf(id)>-1?'on':'off')})}
+  function boxes(cur,done){var b=$('aBoxes');b.innerHTML='';vals.forEach(function(v,k){var d=document.createElement('div');d.className='gaveta'+(k===cur?' atual':'')+(done.indexOf(k)>-1?' feita':'');d.innerHTML='<b>'+v+'</b><i>'+k+'</i>';b.appendChild(d)});
+    var s=document.createElement('div');s.className='seta';s.textContent='i';if(cur>=0&&cur<vals.length){s.style.setProperty('--x',cur)}else s.style.visibility='hidden';b.appendChild(s)}
+  var feitas=[];
+  function ui(){$('aI').textContent=fase==='inicio'?'?':i;$('aSoma').textContent=soma;var o=$('aOut');o.textContent=linhas.join('\n');o.scrollTop=o.scrollHeight}
+  function status(t,c){$('aStatus').textContent=t;$('aStatus').className='status'+(c?' '+c:'')}
+  function reset(){parar();i=0;fase='inicio';soma=0;linhas=[];feitas=[];$('aLit').innerHTML=vals.map(function(v){return '<span class="nu">'+v+'</span>'}).join(', ');A.forEach(function(id){$(id).classList.remove('on','off')});boxes(-1,[]);status('Aperte o play para o for passear pelas caixinhas.');ui()}
+  function passo(){
+    if(fase==='inicio'){hl(['a0','a1']);status('Cria o array com '+vals.length+' caixinhas e a soma começando em 0.');fase='cond';ui();return true}
+    if(fase==='cond'){var ok=i<vals.length;hl(['a2']);boxes(ok?i:-1,feitas);status('Checando: '+i+' < '+vals.length+'? '+(ok?'true ✅ abre a caixinha '+i:'false ❌ acabaram as caixinhas'),ok?'sim':'nao');fase=ok?'print':'fim';ui();return true}
+    if(fase==='print'){hl(['a3']);linhas.push('Fase '+(i+1)+': '+vals[i]);status('pontos['+i+'] vale '+vals[i]+'.');fase='soma';ui();return true}
+    if(fase==='soma'){hl(['a4']);soma+=vals[i];feitas.push(i);boxes(i,feitas);status('soma += pontos['+i+'] → agora soma vale '+soma+'.');fase='inc';ui();return true}
+    if(fase==='inc'){hl(['a2']);i++;status('i++ → agora i vale '+i+'.');fase='cond';ui();return true}
+    if(fase==='fim'){hl(['a5']);linhas.push('Total: '+soma);boxes(-1,feitas);status('Fim! Passou pelas '+vals.length+' caixinhas. Total: '+soma+' 🎉','sim');fase='acabou';ui();return false}
+    return false}
+  function btn(r){$('aPlay').textContent=r?'⏸ Pausar':'▶ Percorrer o array'}
+  function parar(){if(timer){clearInterval(timer);timer=null}btn(false)}
+  $('aPlay').onclick=function(){if(timer){parar();return}if(fase==='acabou')reset();btn(true);passo();timer=setInterval(function(){if(!passo())parar()},650)};
+  $('aStep').onclick=function(){parar();if(fase==='acabou')reset();passo()};
+  $('aReset').onclick=reset;reset();
+
+  var fr=['manga','caju','uva'];
+  function idx(){var k=+$('xI').value;$('xIv').textContent=k;$('xIc').textContent=k;var b=$('xBoxes');b.innerHTML='';
+    fr.forEach(function(v,j){var d=document.createElement('div');d.className='gaveta txt'+(j===k?' atual':'');d.innerHTML='<b>'+v+'</b><i>'+j+'</i>';b.appendChild(d)});
+    if(k>=fr.length){var d=document.createElement('div');d.className='gaveta fantasma atual';d.innerHTML='<b>?</b><i>'+k+'</i>';b.appendChild(d);
+      $('xOut').textContent='ArrayIndexOutOfBoundsException 💥';$('xOut').className='console erro';$('xExp').textContent='A caixinha '+k+' não existe! São só '+fr.length+' caixinhas (índices 0 a '+(fr.length-1)+').';$('xExp').className='status nao'}
+    else{$('xOut').textContent=fr[k];$('xOut').className='console';$('xExp').textContent=k===fr.length-1?'Esta é a última caixinha: índice length - 1 = '+(fr.length-1)+'.':'Abriu a caixinha '+k+'.';$('xExp').className='status'}}
+  $('xI').addEventListener('input',idx);idx();
+})();
+
+document.querySelectorAll('.q').forEach(function(q){var fb=q.querySelector('.fb');q.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});var ok=b.dataset.o===q.dataset.right;b.classList.add(ok?'right':'wrong');fb.textContent=ok?fb.dataset.ok:fb.dataset.no}})});
+(function(){var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');if(!rev)return;rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'}})();
+</script>
+</body>
+</html>

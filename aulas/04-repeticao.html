@@ -160,6 +160,7 @@ input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75re
 @media (max-width:820px){.steps{grid-template-columns:1fr}}
 @media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
 .topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.form .check{min-width:0;flex-wrap:wrap}.form .check code{overflow-wrap:anywhere}
 /* celular */
 .hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
 .codebox,.tablewrap,.console{max-width:100%}
@@ -473,6 +474,32 @@ System.out.println(3);
   </div>
 </section>
 
+<section id="laco-dentro">
+  <div class="wrap two">
+    <div>
+      <h2>Laço dentro de laço 🌀</h2>
+      <p>Um loop pode ficar <strong>dentro</strong> de outro. O de <strong>fora</strong> controla as <strong>linhas</strong>; o de <strong>dentro</strong> desenha o que vai em cada linha. Para cada volta do laço de fora, o de dentro roda <strong>inteirinho</strong>.</p>
+      <p>Repare no truque: o <code>print</code> (sem <code>ln</code>) desenha as figurinhas lado a lado, e o <code>println()</code> vazio só pula a linha quando a linha termina.</p>
+      <div class="form">
+        <label>linhas <input type="number" id="nL" value="3" min="1" max="6" step="1"></label>
+        <label>colunas <input type="number" id="nC" value="5" min="1" max="8" step="1"></label>
+      </div>
+      <p class="small">Desafio extra: e se a quantidade de figurinhas de cada linha dependesse do número da linha? 🤔</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">for</span> (<span class="kw">int</span> linha = <span class="nu">1</span>; linha &lt;= <span class="nu" id="nLc">3</span>; linha++) {</span>
+<span class="ln">    <span class="kw">for</span> (<span class="kw">int</span> col = <span class="nu">1</span>; col &lt;= <span class="nu" id="nCc">5</span>; col++) {</span>
+<span class="ln">        System.out.print(<span class="st">"🌸"</span>);</span>
+<span class="ln">    }</span>
+<span class="ln">    System.out.println(); <span class="cm">// pula a linha</span></span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi" id="nOut" style="min-height:10em;letter-spacing:2px"></div>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
     <h2>Erros que toda iniciante comete (e tudo bem)</h2>
@@ -619,6 +646,9 @@ Decolar! 🚀</div>
 
 document.querySelectorAll('.q').forEach(function(q){var fb=q.querySelector('.fb');q.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});var ok=b.dataset.o===q.dataset.right;b.classList.add(ok?'right':'wrong');fb.textContent=ok?fb.dataset.ok:fb.dataset.no}})});
 (function(){var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');if(!rev)return;rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'}})();
+(function(){function $(i){return document.getElementById(i)}
+function g(){var l=Math.max(1,Math.min(6,parseInt($('nL').value,10)||1)),c=Math.max(1,Math.min(8,parseInt($('nC').value,10)||1));$('nLc').textContent=l;$('nCc').textContent=c;var r=[];for(var i=0;i<l;i++)r.push('🌸'.repeat(c));$('nOut').textContent=r.join('\n')}
+$('nL').addEventListener('input',g);$('nC').addEventListener('input',g);g()})();
 </script>
 </body>
 </html>
