@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula 10: Tratamento de exceções em Java</title>
+<meta name="description" content="Aprenda a ler e tratar exceções em Java com try, catch e finally.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aula 10: exceções e a rede de segurança do try/catch 💜">
+<meta property="og:description" content="Aprenda a ler e tratar exceções em Java com try, catch e finally.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-10-excecoes.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/aulas/10-excecoes.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-10-excecoes.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3FF; --surface:#FFFFFF; --ink:#2A1B4D; --soft:#5E5180;
+  --plum:#6B2FD6; --coral:#FF6B6B; --sun:#FFC845; --mint:#2FBF8F;
+  --code-bg:#241845; --code-ink:#EDE6FF; --line:#E3DBFA;
+  --kw:#FF9ECF; --str:#8FF0C8; --num:#FFD66B; --com:#9C8CC9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+    --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+  --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Fredoka","Nunito",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.5rem 0}
+section + section{border-top:2px dashed var(--line)}
+code,.code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+p code,li code,td code{background:var(--line);padding:.1em .35em;border-radius:6px;font-size:.92em}
+
+/* hero */
+.hero{padding:3rem 0 3.5rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:2rem;align-items:center}
+.hero h1 .fork{display:block;color:var(--plum)}
+.lead{font-size:1.2rem;color:var(--soft)}
+.scene{background:var(--surface);border-radius:28px;padding:1rem;border:3px solid var(--ink)}
+.scene svg{width:100%;height:auto;display:block;border-radius:18px}
+.toggle{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.toggle button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:.55rem 1rem;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--sun);color:#2A1B4D}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+/* scene states */
+#cena .r,#cena .s{transition:opacity .4s}
+#cena.sol .r{opacity:0}
+#cena.chuva .s{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #cena.chuva .drop{animation:fall 1s linear infinite}
+  #cena.chuva .drop:nth-child(2n){animation-delay:.3s}
+  #cena.chuva .drop:nth-child(3n){animation-delay:.6s}
+}
+@keyframes fall{from{transform:translateY(-10px)}to{transform:translateY(40px)}}
+
+/* code block */
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:18px;padding:1rem 0;overflow-x:auto;font-size:.95rem;line-height:1.7}
+.codebox .ln{display:block;padding:0 1.1rem;white-space:pre;border-left:5px solid transparent;transition:background .3s,border-color .3s}
+.codebox .ln.on{background:rgba(255,200,69,.16);border-left-color:var(--sun)}
+.codebox .ln.off{opacity:.45}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--com);font-style:italic}
+.console{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.95rem;overflow-x:auto}
+.console::before{content:"saída › ";color:#777}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+/* anatomia */
+.anatomy{display:grid;gap:.8rem;margin-top:1rem}
+.part{display:flex;gap:.9rem;align-items:flex-start}
+.chip{flex:none;font:600 .9rem "JetBrains Mono",monospace;padding:.3rem .6rem;border-radius:10px;background:var(--sun);color:#2A1B4D}
+.chip.c2{background:var(--mint);color:#08251B}
+.chip.c3{background:var(--coral);color:#fff}
+.chip.c4{background:var(--plum);color:#fff}
+
+/* tabela */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--surface);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:"Fredoka",sans-serif;font-weight:600;background:var(--line)}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--plum);font-size:1.1rem}
+
+/* slider */
+.slider{background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1.2rem}
+.slider label{font-weight:800;display:block;margin-bottom:.4rem}
+.slider input[type=range]{width:100%;accent-color:var(--plum)}
+.big{font:700 3rem "Fredoka",sans-serif;color:var(--plum);line-height:1}
+.result{font:600 1.3rem "Fredoka",sans-serif;margin-top:.6rem}
+
+/* erros */
+.oops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.oop{background:var(--surface);border-radius:20px;padding:1.1rem 1.2rem;border:2px solid var(--line)}
+.oop .bad,.oop .good{font-family:"JetBrains Mono",monospace;font-size:.92rem;padding:.45rem .7rem;border-radius:10px;margin:.35rem 0;overflow-x:auto;white-space:pre}
+.bad{background:rgba(255,107,107,.15);color:var(--ink)}
+.bad::before{content:"✗ ";color:var(--coral);font-weight:700}
+.good{background:rgba(47,191,143,.15);color:var(--ink)}
+.good::before{content:"✓ ";color:var(--mint);font-weight:700}
+
+/* quiz */
+.q{background:var(--surface);border-radius:22px;padding:1.2rem;margin-bottom:1.2rem;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.opts button{font:600 1rem "Nunito",sans-serif;padding:.55rem 1rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.opts button.right{background:var(--mint);color:#08251B;border-color:var(--mint)}
+.opts button.wrong{background:var(--coral);color:#fff;border-color:var(--coral)}
+.fb{margin-top:.7rem;font-weight:600;min-height:1.6em}
+
+.challenge{background:var(--plum);color:#fff;border-radius:28px;padding:1.8rem}
+.challenge p{color:#fff}
+.challenge button{font:600 1rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D;border:none;padding:.65rem 1.2rem;border-radius:999px;cursor:pointer;margin-top:.5rem}
+.challenge .codebox{margin-top:1rem}
+.company{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.person{border-left:5px solid var(--sun);padding:.3rem 0 .3rem 1rem}
+.person strong{font-family:"Fredoka",sans-serif;font-size:1.15rem;display:block}
+footer{padding:2rem 0 3rem;color:var(--soft);text-align:center}
+
+@media (max-width:820px){
+  .hero-grid,.two{grid-template-columns:1fr}
+}
+
+.form{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1rem}
+.form label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.form .check{flex-direction:row;align-items:center;gap:.5rem;align-self:end;padding-bottom:.6rem}
+.check input{width:1.3rem;height:1.3rem;accent-color:var(--plum)}
+input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.caixa{background:var(--bg);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.caixa .et{background:var(--sun);color:#2A1B4D;font:600 .85rem "JetBrains Mono",monospace;padding:.35rem .7rem;border-bottom:3px solid var(--ink);overflow-wrap:anywhere}
+.caixa .vl{padding:.6rem .7rem 0;font:600 1.35rem "Fredoka",sans-serif;overflow-wrap:anywhere;min-height:2.2rem}
+.caixa .tp{font:.8rem "JetBrains Mono",monospace;color:var(--soft);padding:0 .7rem .5rem}
+.tip{background:var(--surface);border-left:6px solid var(--sun);border-radius:0 18px 18px 0;padding:1rem 1.2rem;margin-top:1.5rem}
+.tip p:last-child{margin-bottom:0}
+.rules{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.3rem;font-weight:600}
+.rules .yes{color:var(--mint)}.rules .no{color:var(--coral)}
+.console.multi{white-space:pre-line}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.lessonnav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lessonnav a{color:var(--plum);font-weight:800}
+.num-aula{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 .95rem "Fredoka",sans-serif;padding:.25rem .8rem;border-radius:999px;margin-bottom:1rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+@media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
+.topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.form .check{min-width:0;flex-wrap:wrap}.form .check code{overflow-wrap:anywhere}
+/* celular */
+.hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
+.codebox,.tablewrap,.console{max-width:100%}
+img,svg{max-width:100%}
+p code,li code,td code,h3 code{overflow-wrap:anywhere}
+@media (max-width:600px){
+  .wrap{padding:0 1.1rem}
+  section{padding:2.5rem 0}
+  .hero{padding:2rem 0 2.5rem}
+  .scene{padding:.7rem;border-radius:22px}
+  .codebox{font-size:.8rem;line-height:1.65;border-radius:14px}
+  .codebox .ln{padding:0 .8rem}
+  .console{font-size:.82rem}
+  .lead{font-size:1.05rem}
+  .slider,.q,.oop{padding:1rem}
+  .challenge{padding:1.3rem;border-radius:22px}
+  .tip{padding:.9rem 1rem}
+  th,td{padding:.6rem .7rem}
+  .toggle button{flex:1 1 auto}
+  .opts button{flex:1 1 auto}
+  .lessonnav{justify-content:center}
+}
+
+.status{margin-top:.6rem;padding:.55rem .9rem;border-radius:12px;background:var(--line);font-weight:700;font-size:.95rem}
+.status.sim{background:rgba(47,191,143,.2)}.status.nao{background:rgba(255,107,107,.2)}
+#corda{width:100%;height:auto;display:block;border-radius:18px}
+@media (prefers-reduced-motion:no-preference){
+  #corda.pula #menina{animation:pulo .55s ease-out}
+  #corda.pula #cordaCima{animation:ropeA .55s linear}
+  #corda.pula #cordaBaixo{animation:ropeB .55s linear}
+  #corda.pula #sombra{animation:sombra .55s ease-out;transform-origin:200px 256px}
+}
+@keyframes pulo{0%,100%{transform:translateY(0)}45%{transform:translateY(-34px)}}
+@keyframes ropeA{0%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes ropeB{0%,100%{opacity:0}30%,70%{opacity:1}}
+@keyframes sombra{0%,100%{transform:scale(1)}45%{transform:scale(.6)}}
+.phone{margin-top:1.2rem;display:flex;justify-content:center}
+.bat{position:relative;width:min(260px,100%);height:64px;border:4px solid var(--ink);border-radius:14px;padding:5px;background:var(--surface)}
+.bat::after{content:"";position:absolute;right:-14px;top:18px;width:9px;height:20px;background:var(--ink);border-radius:0 5px 5px 0}
+.batfill{height:100%;width:25%;border-radius:8px;background:var(--sun);transition:width .5s ease,background .3s}
+.batfill.baixa{background:var(--coral)}.batfill.cheia{background:var(--mint)}
+.bat span{position:absolute;inset:0;display:grid;place-items:center;font:700 1.4rem "Fredoka",sans-serif;color:var(--ink)}
+.codebox .ln.gone{display:none}
+table.mini{min-width:0}
+.hero-grid{align-items:start}
+#jOut{height:8.6em;overflow-y:auto;white-space:pre-line}
+#wOut{min-height:8.6em}
+#dOut1,#dOut2{min-height:5.2em}
+.status{min-height:4.4em;display:flex;align-items:center}
+@media (max-width:600px){.status{min-height:5.8em}}
+/* fim aula 04 */
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.terminal{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.92rem;height:9.5em;overflow-y:auto}
+.terminal .eu{color:#FFC845}.terminal .eu::before{content:"> ";color:#777}
+.terminal .erro{color:#FF8A8A}
+.entrada{display:flex;gap:.5rem;margin-top:.6rem}
+.entrada input{flex:1;min-width:0;font-family:"JetBrains Mono",monospace}
+.entrada button,.toggle button:disabled{cursor:pointer}
+.entrada button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--sun);color:#2A1B4D;padding:.5rem .9rem;border-radius:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.fila{margin-top:.8rem;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:.7rem}
+.fila-t{font-weight:800;font-size:.9rem;color:var(--soft);margin-bottom:.4rem}
+.fila-c{display:flex;gap:.4rem;flex-wrap:wrap;min-height:2.6rem;align-items:center}
+.tecla{display:grid;place-items:center;min-width:2.3rem;height:2.3rem;border:2px solid var(--ink);border-bottom-width:4px;border-radius:8px;background:var(--bg);font:700 1.1rem "JetBrains Mono",monospace}
+.tecla.enter{background:var(--coral);color:#fff}
+.vazia{color:var(--soft);font-style:italic}
+.vars{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.6rem;font-family:"JetBrains Mono",monospace;font-size:.95rem}
+.vars b{color:var(--plum)}
+.fname{font:600 .85rem "JetBrains Mono",monospace;color:var(--soft);margin-bottom:.3rem}
+.memoria{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.7rem;min-height:11.5rem}
+.memoria .vazio{grid-column:1/-1;display:grid;place-items:center;border:2px dashed var(--line);border-radius:16px;color:var(--soft);text-align:center;padding:1rem}
+.obj{position:relative;background:var(--bg);border:3px solid var(--ink);border-radius:16px;padding:.8rem .6rem .6rem;text-align:center}
+.obj svg{width:52px;height:52px;display:block;margin:0 auto .3rem}
+.obj .var{position:absolute;top:-.7rem;left:.6rem;background:var(--plum);color:#fff;font:600 .8rem "JetBrains Mono",monospace;padding:.1rem .5rem;border-radius:999px}
+.obj .nm{font:700 1.05rem "Fredoka",sans-serif;overflow-wrap:anywhere}
+.obj .pd{font-size:.82rem;color:var(--soft)}
+.obj .nv{color:#E0A500;letter-spacing:1px}.obj .nv span{opacity:.25}
+@media (prefers-reduced-motion:no-preference){.obj.novo{animation:surge .45s ease-out}}
+@keyframes surge{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.arquivos{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}
+.arq{background:var(--surface);border:3px solid var(--ink);border-radius:14px;padding:.7rem 1rem;font:600 1.05rem "JetBrains Mono",monospace}
+.arq small{display:block;font:600 .85rem "Nunito",sans-serif;color:var(--soft)}
+.terminal{height:11em}
+#pMain{height:12.5em;overflow-y:auto}
+.memoria{grid-template-columns:repeat(4,minmax(0,1fr));min-height:10.5rem}
+.obj .nm{font-size:.95rem}.obj .pd{font-size:.75rem}
+td code{white-space:nowrap}
+@media (max-width:600px){.memoria{grid-template-columns:repeat(2,minmax(0,1fr));min-height:21.5rem}}
+@media (max-width:600px){#pNew,#pClear{flex:1 1 100%}}
+/* fim extras 05-06 */
+
+.tiles{display:flex;flex-wrap:wrap;gap:.35rem;min-height:3.6rem;align-content:flex-start}
+.tile{display:flex;flex-direction:column;align-items:center;min-width:2.1rem;border:2px solid var(--ink);border-radius:10px;background:var(--bg);padding:.2rem .3rem .15rem;transition:background .25s,transform .25s}
+.tile b{font:700 1.15rem "JetBrains Mono",monospace;line-height:1.3}
+.tile i{font:600 .7rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.tile.esp b{color:var(--soft)}
+.tile.hl{background:var(--sun);color:#2A1B4D;transform:translateY(-4px)}.tile.hl i{color:#2A1B4D}
+.tile.fantasma,.gaveta.fantasma{border-style:dashed;border-color:var(--coral);color:var(--coral);background:transparent}
+.metodos{margin-top:.8rem}.metodos button{font-family:"JetBrains Mono",monospace;font-size:.85rem;padding:.4rem .7rem}
+.params{display:grid;gap:.6rem;margin-top:.8rem;min-height:4.8rem}
+.params label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.params input[type=range]{accent-color:var(--plum)}
+.console.erro{color:#FF8A8A}
+.valores{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin-top:1rem}
+.valores label{font:600 .75rem "JetBrains Mono",monospace;display:flex;flex-direction:column;gap:.25rem;color:var(--soft)}
+.valores input{text-align:center;padding:.5rem .2rem}
+.gavetas{position:relative;display:flex;gap:.5rem;padding-bottom:1.9rem;min-height:6.2rem;flex-wrap:nowrap}
+.gaveta{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:12px;background:var(--bg);height:4.2rem;transition:background .3s,transform .3s}
+.gaveta b{font:700 1.4rem "Fredoka",sans-serif;overflow-wrap:anywhere;text-align:center;line-height:1.1}
+.gaveta.txt b{font-size:1rem}
+.gaveta i{font:600 .75rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.gaveta.feita{background:rgba(47,191,143,.22)}
+.gaveta.atual{background:var(--sun);color:#2A1B4D;transform:translateY(-5px)}.gaveta.atual i{color:#2A1B4D}
+.gaveta.fantasma.atual{background:transparent;color:var(--coral)}
+.seta{position:absolute;bottom:0;left:calc((100% - 2rem) / 5 * var(--x,0) + .5rem * var(--x,0) + (100% - 2rem) / 10);transform:translateX(-50%);font:700 1rem "JetBrains Mono",monospace;color:var(--plum);transition:left .3s}
+.seta::before{content:"▲ "}
+#aOut{height:8.6em;overflow-y:auto}
+@media (max-width:600px){.valores{grid-template-columns:repeat(5,minmax(0,1fr))}.gaveta b{font-size:1.1rem}}
+/* fim extras 07-08 */
+
+.maquina{display:grid;grid-template-columns:1fr auto 1fr;gap:.6rem;align-items:center;min-height:5.6rem}
+.mq-col{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:0}
+.mq-chips{display:flex;flex-direction:column;gap:.3rem;align-items:center;min-height:3.8rem;justify-content:center;width:100%}
+.vchip{font:600 .85rem "JetBrains Mono",monospace;padding:.25rem .6rem;border-radius:999px;border:2px solid var(--ink);background:var(--bg);max-width:100%;overflow-wrap:anywhere;text-align:center}
+.vchip.vai{background:var(--sun);color:#2A1B4D}.vchip.dentro{background:var(--plum);color:#fff;border-color:var(--plum)}
+.vchip.volta{background:var(--mint);color:#08251B;border-color:var(--mint)}.vchip.nada{opacity:.6;border-style:dashed}
+@media (prefers-reduced-motion:no-preference){.vchip{animation:surge .35s ease-out}}
+.mq-box{display:flex;flex-direction:column;align-items:center;gap:.2rem;background:var(--plum);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:.7rem 1rem;min-width:8.5rem}
+.mq-box b{font:600 .9rem "JetBrains Mono",monospace}
+.gear{font-size:1.8rem;display:inline-block}
+@media (prefers-reduced-motion:no-preference){.mq-box.roda .gear{animation:gira 1s linear infinite}}
+@keyframes gira{to{transform:rotate(360deg)}}
+#mMain,#mDef{min-height:3.5em}
+#mOut,#eOut{min-height:3em}
+#circo{width:100%;height:auto;display:block;border-radius:18px}
+#rede{transition:opacity .3s}
+#acrobata{transform-box:view-box;transform-origin:200px 80px}
+@media (prefers-reduced-motion:no-preference){
+  #circo.cai #acrobata{animation:cair 1s ease-in forwards}
+  #circo.rede #acrobata{animation:redeA 1.1s ease-out forwards}
+  #circo.ok #acrobata{animation:balanca 1.2s ease-in-out 2}
+}
+#circo.cai #acrobata{transform:translateY(260px) rotate(70deg)}
+#circo.rede #acrobata{transform:translateY(140px)}
+@keyframes cair{0%{transform:none}20%{transform:rotate(-12deg)}100%{transform:translateY(260px) rotate(70deg)}}
+@keyframes redeA{0%{transform:none}15%{transform:rotate(-12deg)}55%{transform:translateY(152px)}75%{transform:translateY(128px)}100%{transform:translateY(140px)}}
+@keyframes balanca{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.console .erro{color:#FF8A8A}.console .cinza{color:#888}
+.trace{background:#000;color:#FF8A8A;border-radius:14px;padding:1rem;font:600 .9rem "JetBrains Mono",monospace;overflow-x:auto;white-space:nowrap;line-height:1.9}
+.trace .tp{cursor:help;border-radius:6px;padding:.1rem .2rem;border-bottom:2px dashed rgba(255,138,138,.6)}
+.trace .tp.ativo,.trace .tp:focus{background:var(--sun);color:#2A1B4D;outline:none}
+.lista{display:flex;flex-wrap:wrap;gap:.5rem;min-height:9.6rem;align-content:flex-start}
+.item{display:flex;flex-direction:column;align-items:center;border:3px solid var(--ink);border-radius:12px;background:var(--bg);padding:.4rem .7rem;transition:background .3s,transform .3s}
+.item b{font:700 1rem "Fredoka",sans-serif}.item i{font:600 .7rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.item.hl{background:var(--sun);color:#2A1B4D;transform:translateY(-4px)}.item.hl i{color:#2A1B4D}
+.item.novo{background:var(--mint);color:#08251B}.item.novo i{color:#08251B}
+@media (prefers-reduced-motion:no-preference){.item.novo,.par.novo{animation:surge .4s ease-out}}
+#lLog,#hLog{height:10.2em;overflow-y:auto}
+.mapa{display:grid;gap:.45rem;min-height:12.4rem;align-content:start}
+.par{display:flex;justify-content:space-between;align-items:center;gap:.5rem;border:3px solid var(--ink);border-radius:12px;background:var(--bg);padding:.4rem .8rem;transition:background .3s}
+.par .k{font:600 .95rem "JetBrains Mono",monospace;overflow-wrap:anywhere}.par .v{font:700 1.2rem "Fredoka",sans-serif;color:var(--plum)}
+.par.hl{background:var(--sun);color:#2A1B4D}.par.hl .v{color:#2A1B4D}
+.par.novo,.par.troca{background:var(--mint);color:#08251B}.par.novo .v,.par.troca .v{color:#08251B}
+@media (prefers-reduced-motion:no-preference){.par.troca{animation:pisca .5s ease-out 2}}
+@keyframes pisca{50%{transform:scale(1.04)}}
+/* fim extras 09-11 */
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="topbar"><a class="voltar" href="../index.html">🏠 Todas as aulas</a><span class="num-aula">Aula 10 de Java, 2 de outubro</span></div>
+      <h1>Todo programa pode tropeçar.<span class="fork">O try/catch é a rede de segurança.</span></h1>
+      <p class="lead">Quando algo dá errado enquanto o programa roda (como dividir por zero), o Java "lança" uma exceção. Sem tratamento, o programa cai. Com <code>try</code>/<code>catch</code>, ele cai na rede, se recupera e continua. Experimente com b = 0, com e sem a rede!</p>
+      <div class="form">
+        <label>a <input type="number" id="ea" value="20" step="1"></label>
+        <label>b <input type="number" id="eb" value="0" step="1"></label>
+      </div>
+      <div class="toggle" role="group" aria-label="Rede de segurança">
+        <button id="eCom" aria-pressed="true">🕸️ Com try/catch</button>
+        <button id="eSem" aria-pressed="false">🚫 Sem rede</button>
+      </div>
+      <div class="toggle"><button id="ePlay">▶ Rodar o programa</button></div>
+    </div>
+    <div class="scene">
+      <svg id="circo" viewBox="0 0 400 260" role="img" aria-label="Uma menina se equilibrando numa corda bamba, com ou sem rede de segurança embaixo">
+        <rect width="400" height="260" fill="#E9E1FF"/>
+        <path d="M0 0 L60 0 L0 60z M400 0 L340 0 L400 60z" fill="#FF8FA8" opacity=".5"/>
+        <rect x="30" y="80" width="10" height="180" fill="#6B2FD6"/><rect x="360" y="80" width="10" height="180" fill="#6B2FD6"/>
+        <rect x="20" y="74" width="30" height="10" rx="3" fill="#2A1B4D"/><rect x="350" y="74" width="30" height="10" rx="3" fill="#2A1B4D"/>
+        <line x1="40" y1="80" x2="360" y2="80" stroke="#2A1B4D" stroke-width="3"/>
+        <g id="rede">
+          <path d="M40 215 Q200 250 360 215" stroke="#FF6B6B" stroke-width="3" fill="none"/>
+          <path d="M40 225 Q200 260 360 225" stroke="#FF6B6B" stroke-width="2" fill="none" opacity=".7"/>
+          <g stroke="#FF6B6B" stroke-width="1.5" opacity=".7">
+            <line x1="80" y1="222" x2="80" y2="233"/><line x1="120" y1="228" x2="120" y2="240"/><line x1="160" y1="232" x2="160" y2="244"/><line x1="200" y1="233" x2="200" y2="245"/><line x1="240" y1="232" x2="240" y2="244"/><line x1="280" y1="228" x2="280" y2="240"/><line x1="320" y1="222" x2="320" y2="233"/>
+          </g>
+        </g>
+        <g id="acrobata">
+          <line x1="140" y1="52" x2="260" y2="52" stroke="#8A5A3C" stroke-width="4" stroke-linecap="round"/>
+          <g transform="translate(200 0) scale(.55) translate(-200 -98)">
+            <path d="M165 150 q35 -60 70 0 v45 h-70z" fill="#3B2314"/>
+            <rect x="185" y="228" width="12" height="40" rx="5" fill="#8A5A3C"/><rect x="203" y="228" width="12" height="40" rx="5" fill="#8A5A3C"/>
+            <path d="M178 180 h44 l14 52 h-72z" fill="#FF6B6B"/>
+            <circle cx="200" cy="152" r="28" fill="#A26C49"/>
+            <path d="M172 146 q28 -34 56 0 q-10 -12 -28 -10 q-18 -2 -28 10z" fill="#3B2314"/><circle cx="232" cy="136" r="9" fill="#3B2314"/>
+            <circle cx="190" cy="150" r="3.5" fill="#2A1B4D"/><circle cx="210" cy="150" r="3.5" fill="#2A1B4D"/>
+            <path id="eBoca" d="M190 164 q10 8 20 0" stroke="#2A1B4D" stroke-width="3" fill="none" stroke-linecap="round"/>
+          </g>
+        </g>
+        <text id="eMsg" x="200" y="140" text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="20" fill="#6B2FD6"></text>
+      </svg>
+      <div class="codebox" id="eCode" style="margin-top:1rem" aria-live="polite"></div>
+      <div class="status" id="eStatus"></div>
+      <div class="console multi" id="eOut"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>O que é uma exceção?</h2>
+      <p>É um erro que acontece <strong>enquanto o programa está rodando</strong>: a pessoa digita letra onde era número, uma conta divide por zero, o código tenta abrir uma caixinha de array que não existe.</p>
+      <p>Quando isso acontece, o Java cria um <strong>objeto</strong> que descreve o problema e o "joga para cima". O nome técnico é <strong>lançar</strong> (<em>throw</em>). Se ninguém pegar esse objeto no caminho, o programa para e mostra aquele texto vermelho no console.</p>
+      <p><strong>Tratar</strong> a exceção é pegar esse objeto antes que ele derrube tudo, decidir o que fazer e seguir em frente.</p>
+    </div>
+    <div>
+      <h3>Os três tipos de erro</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Quando aparece</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td>compilação</td><td>o código nem roda</td><td>esquecer o <code>;</code></td></tr>
+            <tr><td>execução</td><td>roda, mas quebra no meio</td><td>dividir por zero</td></tr>
+            <tr><td>lógico</td><td>roda "perfeito", mas o resultado está errado</td><td>somar em vez de subtrair</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">O try/catch cuida dos erros de <strong>execução</strong>. Os outros dois você conserta no código.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Lendo o relatório vermelho 🔍</h2>
+    <p>O texto vermelho assusta, mas é o Java te ajudando! Ele diz exatamente o que aconteceu e onde. Passe o mouse (ou toque) em cada parte:</p>
+    <div class="trace" aria-label="Exemplo de mensagem de exceção">
+      <div><span class="tp" tabindex="0" data-t="O nome da exceção: diz o TIPO de problema.">Exception in thread "main" java.lang.<b>ArithmeticException</b></span><span class="tp" tabindex="0" data-t="A mensagem: explica o caso específico. Aqui, divisão por zero.">: / by zero</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;at <span class="tp" tabindex="0" data-t="O caminho até o erro: o pacote, a classe e o método onde quebrou.">org.example.Contas.main</span>(<span class="tp" tabindex="0" data-t="O arquivo e a LINHA onde aconteceu. Clique nele na IDE para pular direto para lá!">Contas.java:<b>12</b></span>)</div>
+    </div>
+    <div class="status" id="trTip">Toque numa parte do relatório para ver o que ela significa.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>As exceções mais comuns</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Exceção</th><th>Quando acontece</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td>ArithmeticException</td><td>divisão de inteiro por zero</td><td><code>10 / 0</code></td></tr>
+          <tr><td>ArrayIndexOutOfBoundsException</td><td>posição que não existe no array</td><td><code>notas[9]</code> num array de 5</td></tr>
+          <tr><td>IndexOutOfBoundsException</td><td>posição que não existe na lista</td><td><code>lista.get(9)</code></td></tr>
+          <tr><td>NullPointerException</td><td>usar algo que está <code>null</code> (vazio)</td><td><code>String s = null; s.length();</code></td></tr>
+          <tr><td>InputMismatchException</td><td>Scanner recebe o tipo errado</td><td>digitar "oi" no <code>nextInt()</code></td></tr>
+          <tr><td>NumberFormatException</td><td>converter texto que não é número</td><td><code>Integer.parseInt("a")</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>try, catch e finally</h2>
+      <div class="anatomy">
+        <div class="part"><span class="chip">try</span><span>"Tenta rodar isso aqui." O Java executa linha por linha. Se uma linha der erro, ele <strong>abandona o try na hora</strong>: as linhas seguintes do try não rodam.</span></div>
+        <div class="part"><span class="chip c3">catch</span><span>O plano B. <strong>Só roda se deu erro</strong> no try e se o tipo da exceção combinar. O <code>e</code> é o objeto do erro.</span></div>
+        <div class="part"><span class="chip c2">finally</span><span>Opcional. <strong>Roda sempre</strong>, com erro ou sem. Serve para "fazer a faxina", como fechar o Scanner.</span></div>
+      </div>
+      <p style="margin-top:1rem">Depois disso tudo, o programa <strong>continua normalmente</strong>. Essa é a mágica!</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">try</span> {</span>
+<span class="ln">    <span class="kw">int</span>[] pontos = {<span class="nu">5</span>, <span class="nu">8</span>, <span class="nu">2</span>};</span>
+<span class="ln">    System.out.println(pontos[<span class="nu">7</span>]);</span>
+<span class="ln">    System.out.println(<span class="st">"Esta linha não roda"</span>);</span>
+<span class="ln">} <span class="kw">catch</span> (ArrayIndexOutOfBoundsException e) {</span>
+<span class="ln">    System.out.println(<span class="st">"Posição inválida! "</span> + e.getMessage());</span>
+<span class="ln">} <span class="kw">finally</span> {</span>
+<span class="ln">    System.out.println(<span class="st">"Isso sempre roda."</span>);</span>
+<span class="ln">}</span>
+<span class="ln">System.out.println(<span class="st">"O programa continua!"</span>);</span>
+      </div>
+      <div class="console multi">Posição inválida! Index 7 out of bounds for length 3
+Isso sempre roda.
+O programa continua!</div>
+      <p class="small">O <code>e.getMessage()</code> mostra a mensagem do Java sobre o erro.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Vários catch: a ordem importa</h2>
+      <p>Um try pode ter vários catch, um para cada tipo de problema. O Java testa de cima para baixo e entra no <strong>primeiro</strong> que combinar.</p>
+      <p>O <code>catch (Exception e)</code> pega <strong>qualquer</strong> exceção, então ele precisa ser o <strong>último</strong>. Se vier antes, os de baixo nunca seriam alcançados e o código nem compila.</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">try</span> {</span>
+<span class="ln">    <span class="cm">// código que pode falhar</span></span>
+<span class="ln">} <span class="kw">catch</span> (ArithmeticException e) {</span>
+<span class="ln">    System.out.println(<span class="st">"Conta impossível!"</span>);</span>
+<span class="ln">} <span class="kw">catch</span> (NullPointerException e) {</span>
+<span class="ln">    System.out.println(<span class="st">"Algo estava vazio!"</span>);</span>
+<span class="ln">} <span class="kw">catch</span> (Exception e) {     <span class="cm">// sempre por último</span></span>
+<span class="ln">    System.out.println(<span class="st">"Erro inesperado: "</span> + e.getMessage());</span>
+<span class="ln">}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Scanner à prova de erros</h2>
+      <p>Lembra do <code>InputMismatchException</code> da aula 05, quando alguém digita texto no <code>nextInt()</code>? Agora dá para tratar! Mas tem uma pegadinha: o texto errado <strong>continua na fila do teclado</strong>.</p>
+      <p>Se o seu código estiver dentro de um loop, ele vai tentar ler o mesmo texto errado de novo e de novo, e vira <strong>loop infinito</strong>. Por isso, dentro do catch, coloque um <code>sc.nextLine()</code> para jogar fora o que foi digitado. É o primo do "Enter fantasma"! 👻</p>
+      <p>E não esqueça o import: <code>import java.util.InputMismatchException;</code></p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">int</span> gatos = -<span class="nu">1</span>;</span>
+<span class="ln"><span class="kw">while</span> (gatos &lt; <span class="nu">0</span>) {</span>
+<span class="ln">    System.out.print(<span class="st">"Quantos gatos você tem? "</span>);</span>
+<span class="ln">    <span class="kw">try</span> {</span>
+<span class="ln">        gatos = sc.nextInt();</span>
+<span class="ln">    } <span class="kw">catch</span> (InputMismatchException e) {</span>
+<span class="ln">        System.out.println(<span class="st">"Digite um número! 🐱"</span>);</span>
+<span class="ln">        sc.nextLine(); <span class="cm">// joga fora o texto errado</span></span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+      </div>
+      <div class="console multi">Quantos gatos você tem? dois
+Digite um número! 🐱
+Quantos gatos você tem? 2</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Para saber mais: Error e checked</h2>
+    <div class="steps">
+      <div class="oop">
+        <h3>Error x Exception</h3>
+        <p>Uma <strong>Exception</strong> é um problema no seu código que dá para tratar. Um <strong>Error</strong> é a máquina sem recursos, como falta de memória (<code>OutOfMemoryError</code>) ou um método que chama a si mesmo para sempre (<code>StackOverflowError</code>). Na prática, Error não se trata: o programa morre.</p>
+      </div>
+      <div class="oop">
+        <h3>Checked x Unchecked</h3>
+        <p>As <strong>unchecked</strong> (como todas da tabela acima) o compilador não cobra: o código compila e pode quebrar ao rodar. As <strong>checked</strong> (como <code>IOException</code>, ao mexer com arquivos) o compilador <strong>obriga</strong> a tratar, senão nem compila.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Erros que toda iniciante comete (e tudo bem)</h2>
+    <div class="oops">
+      <div class="oop"><h3>Catch vazio</h3><p>O erro acontece e ninguém fica sabendo. Sempre avise algo.</p><div class="bad">catch (Exception e) { }</div><div class="good">catch (Exception e) {
+    System.out.println("Erro: " + e.getMessage());
+}</div></div>
+      <div class="oop"><h3>Try gigante</h3><p>Deixe no try só o que pode falhar. Fica mais fácil saber o que deu errado.</p><div class="bad">try { /* o programa inteiro */ }</div><div class="good">try { n = sc.nextInt(); }</div></div>
+      <div class="oop"><h3>Exception primeiro</h3><p>O genérico vai por último.</p><div class="bad">catch (Exception e) {...}
+catch (ArithmeticException e) {...}</div><div class="good">catch (ArithmeticException e) {...}
+catch (Exception e) {...}</div></div>
+      <div class="oop"><h3>Esquecer de limpar o Scanner</h3><p>Sem o <code>sc.nextLine()</code> no catch, o texto errado fica na fila e o loop nunca acaba.</p><div class="bad">catch (InputMismatchException e) {
+    System.out.println("Erro!");
+}</div><div class="good">catch (InputMismatchException e) {
+    System.out.println("Erro!");
+    sc.nextLine();
+}</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Teste o que você aprendeu</h2>
+    <div class="q" data-right="c">
+      <h3>1. Quando o bloco <code>finally</code> roda?</h3>
+      <div class="opts"><button data-o="a">Só se deu erro</button><button data-o="b">Só se não deu erro</button><button data-o="c">Sempre</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! Com erro ou sem erro, o finally roda." data-no="Quase. O finally roda sempre, dando erro ou não."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>2. Se a 1ª linha do try dá erro, a 2ª linha do try roda?</h3>
+      <div class="opts"><button data-o="a">Não, pula direto para o catch</button><button data-o="b">Sim, depois do catch</button><button data-o="c">Sim, antes do catch</button></div>
+      <div class="fb" aria-live="polite" data-ok="Certinho! O try é abandonado na hora do erro." data-no="Não é esse. No erro, o Java abandona o try e salta para o catch."></div>
+    </div>
+    <div class="q" data-right="b">
+      <h3>3. Qual exceção aparece com <code>String s = null; s.length();</code>?</h3>
+      <div class="opts"><button data-o="a">ArithmeticException</button><button data-o="b">NullPointerException</button><button data-o="c">InputMismatchException</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! Usar algo null dá NullPointerException." data-no="Olha de novo: o s está null (vazio), então é NullPointerException."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>4. Onde o <code>catch (Exception e)</code> deve ficar?</h3>
+      <div class="opts"><button data-o="a">Primeiro</button><button data-o="b">No meio</button><button data-o="c">Por último</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! Ele pega tudo, então vem por último." data-no="Quase. Como ele pega qualquer exceção, precisa ser o último."></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="challenge">
+      <h2>Desafio: dividindo as figurinhas 🃏</h2>
+      <p>Peça com o Scanner quantas figurinhas existem e entre quantas amigas elas vão ser divididas. Mostre quantas cada amiga ganha e quantas sobram (lembra do <code>%</code>?). Trate dois problemas: alguém digitar texto em vez de número e alguém digitar 0 amigas. No final, com erro ou sem, mostre "Obrigada por usar o divisor! 💜".</p>
+      <button id="revelar" aria-expanded="false">Ver uma resposta possível</button>
+      <div id="resposta" hidden>
+        <div class="codebox">
+<span class="ln"><span class="kw">import</span> java.util.InputMismatchException;</span>
+<span class="ln"><span class="kw">import</span> java.util.Scanner;</span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">public class</span> Figurinhas {</span>
+<span class="ln">    <span class="kw">public static void</span> main(String[] args) {</span>
+<span class="ln">        <span class="kw">Scanner</span> sc = <span class="kw">new</span> Scanner(System.in);</span>
+<span class="ln">        <span class="kw">try</span> {</span>
+<span class="ln">            System.out.print(<span class="st">"Figurinhas: "</span>);</span>
+<span class="ln">            <span class="kw">int</span> total = sc.nextInt();</span>
+<span class="ln">            System.out.print(<span class="st">"Amigas: "</span>);</span>
+<span class="ln">            <span class="kw">int</span> amigas = sc.nextInt();</span>
+<span class="ln"> </span>
+<span class="ln">            System.out.println(<span class="st">"Cada uma ganha: "</span> + (total / amigas));</span>
+<span class="ln">            System.out.println(<span class="st">"Sobram: "</span> + (total % amigas));</span>
+<span class="ln">        } <span class="kw">catch</span> (InputMismatchException e) {</span>
+<span class="ln">            System.out.println(<span class="st">"Digite só números!"</span>);</span>
+<span class="ln">        } <span class="kw">catch</span> (ArithmeticException e) {</span>
+<span class="ln">            System.out.println(<span class="st">"Precisa ter pelo menos 1 amiga!"</span>);</span>
+<span class="ln">        } <span class="kw">finally</span> {</span>
+<span class="ln">            System.out.println(<span class="st">"Obrigada por usar o divisor! 💜"</span>);</span>
+<span class="ln">            sc.close();</span>
+<span class="ln">        }</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+        </div>
+        <p style="margin-top:1rem">Quer ir além? Coloque tudo num <code>while</code> para o programa perguntar de novo quando a pessoa errar (e não esqueça do <code>sc.nextLine()</code> no catch!).</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><div class="lessonnav"><a href="09-metodos.html">← Aula 09</a><a href="../index.html">Todas as aulas</a><a href="11-arraylist-hashmap.html">Aula 11 →</a></div>Feito com carinho para quem está começando. 💜</div></footer>
+<script>(function(){
+  function $(i){return document.getElementById(i)}
+  var com=true,timer=null,passos=[],k=0,svg=$('circo');
+  function codigo(a,b){
+    var A='<span class="nu">'+a+'</span>',B='<span class="nu">'+b+'</span>';
+    if(com)return [
+      ['c0','<span class="kw">int</span> a = '+A+', b = '+B+';'],
+      ['c1','<span class="kw">try</span> {'],
+      ['c2','    <span class="kw">int</span> r = a / b;'],
+      ['c3','    System.out.println(<span class="st">"Resultado: "</span> + r);'],
+      ['c4','} <span class="kw">catch</span> (ArithmeticException e) {'],
+      ['c5','    System.out.println(<span class="st">"Ops! Não dá pra dividir por zero."</span>);'],
+      ['c6','} <span class="kw">finally</span> {'],
+      ['c7','    System.out.println(<span class="st">"Fim da conta."</span>);'],
+      ['c8','}'],
+      ['c9','System.out.println(<span class="st">"O programa continua! 💜"</span>);']];
+    return [
+      ['c0','<span class="kw">int</span> a = '+A+', b = '+B+';'],
+      ['c2','<span class="kw">int</span> r = a / b;'],
+      ['c3','System.out.println(<span class="st">"Resultado: "</span> + r);'],
+      ['c9','System.out.println(<span class="st">"O programa continua! 💜"</span>);']];
+  }
+  function vals(){var a=parseInt($('ea').value,10),b=parseInt($('eb').value,10);return[isNaN(a)?0:a,isNaN(b)?0:b]}
+  function render(){var v=vals();$('eCode').innerHTML=codigo(v[0],v[1]).map(function(l){return '<span class="ln" id="'+l[0]+'">'+l[1]+'</span>'}).join('')}
+  function hl(id){document.querySelectorAll('#eCode .ln').forEach(function(l){l.classList.remove('on','off');l.classList.add(l.id===id?'on':'off')})}
+  function status(t,c){$('eStatus').textContent=t;$('eStatus').className='status'+(c?' '+c:'')}
+  var out=[];function print(t,cls){out.push({t:t,c:cls});var o=$('eOut');o.innerHTML='';out.forEach(function(x){var d=document.createElement('div');d.textContent=x.t;if(x.c)d.className=x.c;o.appendChild(d)})}
+  function anim(c){svg.classList.remove('cai','rede','ok');void svg.getBoundingClientRect();if(c)svg.classList.add(c)}
+  function reset(){if(timer){clearInterval(timer);timer=null}render();out=[];$('eOut').innerHTML='';anim(null);$('eMsg').textContent='';$('eBoca').setAttribute('d','M190 164 q10 8 20 0');
+    $('rede').style.opacity=com?1:0;status('Escolha os números, com ou sem rede, e aperte Rodar.');$('ePlay').disabled=false;
+    $('eCom').setAttribute('aria-pressed',com);$('eSem').setAttribute('aria-pressed',!com)}
+  function plano(){var v=vals(),a=v[0],b=v[1],P=[];
+    P.push(function(){hl('c0');status('Cria as variáveis a e b.')});
+    if(com)P.push(function(){hl('c1');status('Entra no try: "tenta rodar isso aqui".')});
+    if(b!==0){
+      P.push(function(){hl('c2');status(a+' / '+b+' = '+Math.trunc(a/b)+'. Deu certo!','sim')});
+      P.push(function(){hl('c3');print('Resultado: '+Math.trunc(a/b))});
+      if(com){P.push(function(){hl('c4');status('Não deu erro, então o catch inteiro é pulado.')});
+        P.push(function(){hl('c7');print('Fim da conta.');status('O finally roda sempre.')})}
+      P.push(function(){hl('c9');print('O programa continua! 💜');anim('ok');$('eMsg').textContent='Equilíbrio perfeito! ✨';status('Tudo certo do começo ao fim. 🎉','sim')});
+    }else{
+      P.push(function(){hl('c2');status('💥 '+a+' / 0: o Java lança uma ArithmeticException!','nao');$('eBoca').setAttribute('d','M192 168 q8 -6 16 0')});
+      if(com){
+        P.push(function(){hl('c5');anim('rede');$('eMsg').textContent='Caiu na rede! 🕸️';print('Ops! Não dá pra dividir por zero.');status('O resto do try é abandonado e o catch pega a exceção.','sim')});
+        P.push(function(){hl('c7');print('Fim da conta.');status('O finally roda sempre, mesmo com erro.')});
+        P.push(function(){hl('c9');print('O programa continua! 💜');$('eBoca').setAttribute('d','M190 164 q10 8 20 0');status('Recuperou e seguiu em frente! Essa é a mágica do try/catch. 🎉','sim')});
+      }else{
+        P.push(function(){anim('cai');$('eMsg').textContent='Sem rede... 😱';
+          print('Exception in thread "main" java.lang.ArithmeticException: / by zero','erro');
+          print('    at Main.main(Main.java:2)','erro');print('Process finished with exit code 1','cinza');
+          document.querySelectorAll('#eCode .ln').forEach(function(l){l.classList.remove('on');l.classList.add('off')});
+          status('O programa caiu! A última linha nunca rodou. Ligue a rede e tente de novo.','nao')});
+      }
+    }
+    return P}
+  $('ePlay').onclick=function(){reset();passos=plano();k=0;$('ePlay').disabled=true;passos[k++]();timer=setInterval(function(){if(k<passos.length)passos[k++]();else{clearInterval(timer);timer=null;$('ePlay').disabled=false}},1100)};
+  $('eCom').onclick=function(){com=true;reset()};$('eSem').onclick=function(){com=false;reset()};
+  $('ea').addEventListener('input',reset);$('eb').addEventListener('input',reset);
+  reset();
+  document.querySelectorAll('.trace .tp').forEach(function(t){function f(){document.querySelectorAll('.trace .tp').forEach(function(x){x.classList.remove('ativo')});t.classList.add('ativo');$('trTip').textContent=t.dataset.t}
+    t.addEventListener('mouseenter',f);t.addEventListener('focus',f);t.addEventListener('click',f)});
+})();
+
+document.querySelectorAll('.q').forEach(function(q){var fb=q.querySelector('.fb');q.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});var ok=b.dataset.o===q.dataset.right;b.classList.add(ok?'right':'wrong');fb.textContent=ok?fb.dataset.ok:fb.dataset.no}})});
+(function(){var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');if(!rev)return;rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'}})();
+</script>
+</body>
+</html>
