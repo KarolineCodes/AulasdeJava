@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aula 09: Métodos em Java</title>
+<meta name="description" content="Aprenda a criar métodos em Java: parâmetros, return, void, static e sobrecarga.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💜</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aula 09: métodos, as maquininhas do Java 💜">
+<meta property="og:description" content="Aprenda a criar métodos em Java: parâmetros, return, void, static e sobrecarga.">
+<meta property="og:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-09-metodos.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://karolinecodes.github.io/AulasdeJava/aulas/09-metodos.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://karolinecodes.github.io/AulasdeJava/imagens/capa-09-metodos.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F3FF; --surface:#FFFFFF; --ink:#2A1B4D; --soft:#5E5180;
+  --plum:#6B2FD6; --coral:#FF6B6B; --sun:#FFC845; --mint:#2FBF8F;
+  --code-bg:#241845; --code-ink:#EDE6FF; --line:#E3DBFA;
+  --kw:#FF9ECF; --str:#8FF0C8; --num:#FFD66B; --com:#9C8CC9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+    --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170F2E; --surface:#221842; --ink:#F2ECFF; --soft:#B9ACE0;
+  --plum:#A77BFF; --line:#3A2C66; --code-bg:#0F0A22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.05rem;line-height:1.6}
+h1,h2,h3{font-family:"Fredoka","Nunito",system-ui,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+section{padding:3.5rem 0}
+section + section{border-top:2px dashed var(--line)}
+code,.code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+p code,li code,td code{background:var(--line);padding:.1em .35em;border-radius:6px;font-size:.92em}
+
+/* hero */
+.hero{padding:3rem 0 3.5rem}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:2rem;align-items:center}
+.hero h1 .fork{display:block;color:var(--plum)}
+.lead{font-size:1.2rem;color:var(--soft)}
+.scene{background:var(--surface);border-radius:28px;padding:1rem;border:3px solid var(--ink)}
+.scene svg{width:100%;height:auto;display:block;border-radius:18px}
+.toggle{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.toggle button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:.55rem 1rem;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--sun);color:#2A1B4D}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+
+/* scene states */
+#cena .r,#cena .s{transition:opacity .4s}
+#cena.sol .r{opacity:0}
+#cena.chuva .s{opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  #cena.chuva .drop{animation:fall 1s linear infinite}
+  #cena.chuva .drop:nth-child(2n){animation-delay:.3s}
+  #cena.chuva .drop:nth-child(3n){animation-delay:.6s}
+}
+@keyframes fall{from{transform:translateY(-10px)}to{transform:translateY(40px)}}
+
+/* code block */
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:18px;padding:1rem 0;overflow-x:auto;font-size:.95rem;line-height:1.7}
+.codebox .ln{display:block;padding:0 1.1rem;white-space:pre;border-left:5px solid transparent;transition:background .3s,border-color .3s}
+.codebox .ln.on{background:rgba(255,200,69,.16);border-left-color:var(--sun)}
+.codebox .ln.off{opacity:.45}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--str)}.nu{color:var(--num)}.cm{color:var(--com);font-style:italic}
+.console{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.95rem;overflow-x:auto}
+.console::before{content:"saída › ";color:#777}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+
+/* anatomia */
+.anatomy{display:grid;gap:.8rem;margin-top:1rem}
+.part{display:flex;gap:.9rem;align-items:flex-start}
+.chip{flex:none;font:600 .9rem "JetBrains Mono",monospace;padding:.3rem .6rem;border-radius:10px;background:var(--sun);color:#2A1B4D}
+.chip.c2{background:var(--mint);color:#08251B}
+.chip.c3{background:var(--coral);color:#fff}
+.chip.c4{background:var(--plum);color:#fff}
+
+/* tabela */
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:460px;background:var(--surface);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:"Fredoka",sans-serif;font-weight:600;background:var(--line)}
+td:first-child{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--plum);font-size:1.1rem}
+
+/* slider */
+.slider{background:var(--surface);border:3px solid var(--ink);border-radius:22px;padding:1.2rem}
+.slider label{font-weight:800;display:block;margin-bottom:.4rem}
+.slider input[type=range]{width:100%;accent-color:var(--plum)}
+.big{font:700 3rem "Fredoka",sans-serif;color:var(--plum);line-height:1}
+.result{font:600 1.3rem "Fredoka",sans-serif;margin-top:.6rem}
+
+/* erros */
+.oops{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.oop{background:var(--surface);border-radius:20px;padding:1.1rem 1.2rem;border:2px solid var(--line)}
+.oop .bad,.oop .good{font-family:"JetBrains Mono",monospace;font-size:.92rem;padding:.45rem .7rem;border-radius:10px;margin:.35rem 0;overflow-x:auto;white-space:pre}
+.bad{background:rgba(255,107,107,.15);color:var(--ink)}
+.bad::before{content:"✗ ";color:var(--coral);font-weight:700}
+.good{background:rgba(47,191,143,.15);color:var(--ink)}
+.good::before{content:"✓ ";color:var(--mint);font-weight:700}
+
+/* quiz */
+.q{background:var(--surface);border-radius:22px;padding:1.2rem;margin-bottom:1.2rem;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.opts button{font:600 1rem "Nunito",sans-serif;padding:.55rem 1rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.opts button.right{background:var(--mint);color:#08251B;border-color:var(--mint)}
+.opts button.wrong{background:var(--coral);color:#fff;border-color:var(--coral)}
+.fb{margin-top:.7rem;font-weight:600;min-height:1.6em}
+
+.challenge{background:var(--plum);color:#fff;border-radius:28px;padding:1.8rem}
+.challenge p{color:#fff}
+.challenge button{font:600 1rem "Fredoka",sans-serif;background:var(--sun);color:#2A1B4D;border:none;padding:.65rem 1.2rem;border-radius:999px;cursor:pointer;margin-top:.5rem}
+.challenge .codebox{margin-top:1rem}
+.company{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.person{border-left:5px solid var(--sun);padding:.3rem 0 .3rem 1rem}
+.person strong{font-family:"Fredoka",sans-serif;font-size:1.15rem;display:block}
+footer{padding:2rem 0 3rem;color:var(--soft);text-align:center}
+
+@media (max-width:820px){
+  .hero-grid,.two{grid-template-columns:1fr}
+}
+
+.form{display:grid;gap:.8rem;grid-template-columns:1fr 1fr;margin-top:1rem}
+.form label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.form .check{flex-direction:row;align-items:center;gap:.5rem;align-self:end;padding-bottom:.6rem}
+.check input{width:1.3rem;height:1.3rem;accent-color:var(--plum)}
+input[type=text],input[type=number]{font:inherit;width:100%;padding:.55rem .75rem;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.boxes{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.caixa{background:var(--bg);border:3px solid var(--ink);border-radius:16px;overflow:hidden}
+.caixa .et{background:var(--sun);color:#2A1B4D;font:600 .85rem "JetBrains Mono",monospace;padding:.35rem .7rem;border-bottom:3px solid var(--ink);overflow-wrap:anywhere}
+.caixa .vl{padding:.6rem .7rem 0;font:600 1.35rem "Fredoka",sans-serif;overflow-wrap:anywhere;min-height:2.2rem}
+.caixa .tp{font:.8rem "JetBrains Mono",monospace;color:var(--soft);padding:0 .7rem .5rem}
+.tip{background:var(--surface);border-left:6px solid var(--sun);border-radius:0 18px 18px 0;padding:1rem 1.2rem;margin-top:1.5rem}
+.tip p:last-child{margin-bottom:0}
+.rules{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:.3rem;font-weight:600}
+.rules .yes{color:var(--mint)}.rules .no{color:var(--coral)}
+.console.multi{white-space:pre-line}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.lessonnav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.lessonnav a{color:var(--plum);font-weight:800}
+.num-aula{display:inline-block;background:var(--sun);color:#2A1B4D;font:600 .95rem "Fredoka",sans-serif;padding:.25rem .8rem;border-radius:999px;margin-bottom:1rem}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+@media (max-width:420px){.form,.boxes{grid-template-columns:1fr}}
+.topbar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem}.topbar .num-aula{margin-bottom:0}.voltar{display:inline-flex;align-items:center;gap:.35rem;font:600 .95rem "Fredoka",system-ui,sans-serif;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:.22rem .85rem;background:var(--surface)}.voltar:hover{background:var(--line)}.voltar:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+.form .check{min-width:0;flex-wrap:wrap}.form .check code{overflow-wrap:anywhere}
+/* celular */
+.hero-grid>*,.two>*,.steps>*,.oops>*,.company>*{min-width:0}
+.codebox,.tablewrap,.console{max-width:100%}
+img,svg{max-width:100%}
+p code,li code,td code,h3 code{overflow-wrap:anywhere}
+@media (max-width:600px){
+  .wrap{padding:0 1.1rem}
+  section{padding:2.5rem 0}
+  .hero{padding:2rem 0 2.5rem}
+  .scene{padding:.7rem;border-radius:22px}
+  .codebox{font-size:.8rem;line-height:1.65;border-radius:14px}
+  .codebox .ln{padding:0 .8rem}
+  .console{font-size:.82rem}
+  .lead{font-size:1.05rem}
+  .slider,.q,.oop{padding:1rem}
+  .challenge{padding:1.3rem;border-radius:22px}
+  .tip{padding:.9rem 1rem}
+  th,td{padding:.6rem .7rem}
+  .toggle button{flex:1 1 auto}
+  .opts button{flex:1 1 auto}
+  .lessonnav{justify-content:center}
+}
+
+.status{margin-top:.6rem;padding:.55rem .9rem;border-radius:12px;background:var(--line);font-weight:700;font-size:.95rem}
+.status.sim{background:rgba(47,191,143,.2)}.status.nao{background:rgba(255,107,107,.2)}
+#corda{width:100%;height:auto;display:block;border-radius:18px}
+@media (prefers-reduced-motion:no-preference){
+  #corda.pula #menina{animation:pulo .55s ease-out}
+  #corda.pula #cordaCima{animation:ropeA .55s linear}
+  #corda.pula #cordaBaixo{animation:ropeB .55s linear}
+  #corda.pula #sombra{animation:sombra .55s ease-out;transform-origin:200px 256px}
+}
+@keyframes pulo{0%,100%{transform:translateY(0)}45%{transform:translateY(-34px)}}
+@keyframes ropeA{0%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes ropeB{0%,100%{opacity:0}30%,70%{opacity:1}}
+@keyframes sombra{0%,100%{transform:scale(1)}45%{transform:scale(.6)}}
+.phone{margin-top:1.2rem;display:flex;justify-content:center}
+.bat{position:relative;width:min(260px,100%);height:64px;border:4px solid var(--ink);border-radius:14px;padding:5px;background:var(--surface)}
+.bat::after{content:"";position:absolute;right:-14px;top:18px;width:9px;height:20px;background:var(--ink);border-radius:0 5px 5px 0}
+.batfill{height:100%;width:25%;border-radius:8px;background:var(--sun);transition:width .5s ease,background .3s}
+.batfill.baixa{background:var(--coral)}.batfill.cheia{background:var(--mint)}
+.bat span{position:absolute;inset:0;display:grid;place-items:center;font:700 1.4rem "Fredoka",sans-serif;color:var(--ink)}
+.codebox .ln.gone{display:none}
+table.mini{min-width:0}
+.hero-grid{align-items:start}
+#jOut{height:8.6em;overflow-y:auto;white-space:pre-line}
+#wOut{min-height:8.6em}
+#dOut1,#dOut2{min-height:5.2em}
+.status{min-height:4.4em;display:flex;align-items:center}
+@media (max-width:600px){.status{min-height:5.8em}}
+/* fim aula 04 */
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.terminal{margin-top:.6rem;background:#000;color:#8FF0C8;border-radius:12px;padding:.7rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.92rem;height:9.5em;overflow-y:auto}
+.terminal .eu{color:#FFC845}.terminal .eu::before{content:"> ";color:#777}
+.terminal .erro{color:#FF8A8A}
+.entrada{display:flex;gap:.5rem;margin-top:.6rem}
+.entrada input{flex:1;min-width:0;font-family:"JetBrains Mono",monospace}
+.entrada button,.toggle button:disabled{cursor:pointer}
+.entrada button{font:600 1rem "Fredoka",system-ui,sans-serif;border:3px solid var(--ink);background:var(--sun);color:#2A1B4D;padding:.5rem .9rem;border-radius:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.fila{margin-top:.8rem;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:.7rem}
+.fila-t{font-weight:800;font-size:.9rem;color:var(--soft);margin-bottom:.4rem}
+.fila-c{display:flex;gap:.4rem;flex-wrap:wrap;min-height:2.6rem;align-items:center}
+.tecla{display:grid;place-items:center;min-width:2.3rem;height:2.3rem;border:2px solid var(--ink);border-bottom-width:4px;border-radius:8px;background:var(--bg);font:700 1.1rem "JetBrains Mono",monospace}
+.tecla.enter{background:var(--coral);color:#fff}
+.vazia{color:var(--soft);font-style:italic}
+.vars{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.6rem;font-family:"JetBrains Mono",monospace;font-size:.95rem}
+.vars b{color:var(--plum)}
+.fname{font:600 .85rem "JetBrains Mono",monospace;color:var(--soft);margin-bottom:.3rem}
+.memoria{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.7rem;min-height:11.5rem}
+.memoria .vazio{grid-column:1/-1;display:grid;place-items:center;border:2px dashed var(--line);border-radius:16px;color:var(--soft);text-align:center;padding:1rem}
+.obj{position:relative;background:var(--bg);border:3px solid var(--ink);border-radius:16px;padding:.8rem .6rem .6rem;text-align:center}
+.obj svg{width:52px;height:52px;display:block;margin:0 auto .3rem}
+.obj .var{position:absolute;top:-.7rem;left:.6rem;background:var(--plum);color:#fff;font:600 .8rem "JetBrains Mono",monospace;padding:.1rem .5rem;border-radius:999px}
+.obj .nm{font:700 1.05rem "Fredoka",sans-serif;overflow-wrap:anywhere}
+.obj .pd{font-size:.82rem;color:var(--soft)}
+.obj .nv{color:#E0A500;letter-spacing:1px}.obj .nv span{opacity:.25}
+@media (prefers-reduced-motion:no-preference){.obj.novo{animation:surge .45s ease-out}}
+@keyframes surge{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.arquivos{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}
+.arq{background:var(--surface);border:3px solid var(--ink);border-radius:14px;padding:.7rem 1rem;font:600 1.05rem "JetBrains Mono",monospace}
+.arq small{display:block;font:600 .85rem "Nunito",sans-serif;color:var(--soft)}
+.terminal{height:11em}
+#pMain{height:12.5em;overflow-y:auto}
+.memoria{grid-template-columns:repeat(4,minmax(0,1fr));min-height:10.5rem}
+.obj .nm{font-size:.95rem}.obj .pd{font-size:.75rem}
+td code{white-space:nowrap}
+@media (max-width:600px){.memoria{grid-template-columns:repeat(2,minmax(0,1fr));min-height:21.5rem}}
+@media (max-width:600px){#pNew,#pClear{flex:1 1 100%}}
+/* fim extras 05-06 */
+
+.tiles{display:flex;flex-wrap:wrap;gap:.35rem;min-height:3.6rem;align-content:flex-start}
+.tile{display:flex;flex-direction:column;align-items:center;min-width:2.1rem;border:2px solid var(--ink);border-radius:10px;background:var(--bg);padding:.2rem .3rem .15rem;transition:background .25s,transform .25s}
+.tile b{font:700 1.15rem "JetBrains Mono",monospace;line-height:1.3}
+.tile i{font:600 .7rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.tile.esp b{color:var(--soft)}
+.tile.hl{background:var(--sun);color:#2A1B4D;transform:translateY(-4px)}.tile.hl i{color:#2A1B4D}
+.tile.fantasma,.gaveta.fantasma{border-style:dashed;border-color:var(--coral);color:var(--coral);background:transparent}
+.metodos{margin-top:.8rem}.metodos button{font-family:"JetBrains Mono",monospace;font-size:.85rem;padding:.4rem .7rem}
+.params{display:grid;gap:.6rem;margin-top:.8rem;min-height:4.8rem}
+.params label{font-weight:800;font-size:.95rem;display:flex;flex-direction:column;gap:.25rem}
+.params input[type=range]{accent-color:var(--plum)}
+.console.erro{color:#FF8A8A}
+.valores{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin-top:1rem}
+.valores label{font:600 .75rem "JetBrains Mono",monospace;display:flex;flex-direction:column;gap:.25rem;color:var(--soft)}
+.valores input{text-align:center;padding:.5rem .2rem}
+.gavetas{position:relative;display:flex;gap:.5rem;padding-bottom:1.9rem;min-height:6.2rem;flex-wrap:nowrap}
+.gaveta{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:12px;background:var(--bg);height:4.2rem;transition:background .3s,transform .3s}
+.gaveta b{font:700 1.4rem "Fredoka",sans-serif;overflow-wrap:anywhere;text-align:center;line-height:1.1}
+.gaveta.txt b{font-size:1rem}
+.gaveta i{font:600 .75rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.gaveta.feita{background:rgba(47,191,143,.22)}
+.gaveta.atual{background:var(--sun);color:#2A1B4D;transform:translateY(-5px)}.gaveta.atual i{color:#2A1B4D}
+.gaveta.fantasma.atual{background:transparent;color:var(--coral)}
+.seta{position:absolute;bottom:0;left:calc((100% - 2rem) / 5 * var(--x,0) + .5rem * var(--x,0) + (100% - 2rem) / 10);transform:translateX(-50%);font:700 1rem "JetBrains Mono",monospace;color:var(--plum);transition:left .3s}
+.seta::before{content:"▲ "}
+#aOut{height:8.6em;overflow-y:auto}
+@media (max-width:600px){.valores{grid-template-columns:repeat(5,minmax(0,1fr))}.gaveta b{font-size:1.1rem}}
+/* fim extras 07-08 */
+
+.maquina{display:grid;grid-template-columns:1fr auto 1fr;gap:.6rem;align-items:center;min-height:5.6rem}
+.mq-col{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:0}
+.mq-chips{display:flex;flex-direction:column;gap:.3rem;align-items:center;min-height:3.8rem;justify-content:center;width:100%}
+.vchip{font:600 .85rem "JetBrains Mono",monospace;padding:.25rem .6rem;border-radius:999px;border:2px solid var(--ink);background:var(--bg);max-width:100%;overflow-wrap:anywhere;text-align:center}
+.vchip.vai{background:var(--sun);color:#2A1B4D}.vchip.dentro{background:var(--plum);color:#fff;border-color:var(--plum)}
+.vchip.volta{background:var(--mint);color:#08251B;border-color:var(--mint)}.vchip.nada{opacity:.6;border-style:dashed}
+@media (prefers-reduced-motion:no-preference){.vchip{animation:surge .35s ease-out}}
+.mq-box{display:flex;flex-direction:column;align-items:center;gap:.2rem;background:var(--plum);color:#fff;border:3px solid var(--ink);border-radius:18px;padding:.7rem 1rem;min-width:8.5rem}
+.mq-box b{font:600 .9rem "JetBrains Mono",monospace}
+.gear{font-size:1.8rem;display:inline-block}
+@media (prefers-reduced-motion:no-preference){.mq-box.roda .gear{animation:gira 1s linear infinite}}
+@keyframes gira{to{transform:rotate(360deg)}}
+#mMain,#mDef{min-height:3.5em}
+#mOut,#eOut{min-height:3em}
+#circo{width:100%;height:auto;display:block;border-radius:18px}
+#rede{transition:opacity .3s}
+#acrobata{transform-box:view-box;transform-origin:200px 80px}
+@media (prefers-reduced-motion:no-preference){
+  #circo.cai #acrobata{animation:cair 1s ease-in forwards}
+  #circo.rede #acrobata{animation:redeA 1.1s ease-out forwards}
+  #circo.ok #acrobata{animation:balanca 1.2s ease-in-out 2}
+}
+#circo.cai #acrobata{transform:translateY(260px) rotate(70deg)}
+#circo.rede #acrobata{transform:translateY(140px)}
+@keyframes cair{0%{transform:none}20%{transform:rotate(-12deg)}100%{transform:translateY(260px) rotate(70deg)}}
+@keyframes redeA{0%{transform:none}15%{transform:rotate(-12deg)}55%{transform:translateY(152px)}75%{transform:translateY(128px)}100%{transform:translateY(140px)}}
+@keyframes balanca{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.console .erro{color:#FF8A8A}.console .cinza{color:#888}
+.trace{background:#000;color:#FF8A8A;border-radius:14px;padding:1rem;font:600 .9rem "JetBrains Mono",monospace;overflow-x:auto;white-space:nowrap;line-height:1.9}
+.trace .tp{cursor:help;border-radius:6px;padding:.1rem .2rem;border-bottom:2px dashed rgba(255,138,138,.6)}
+.trace .tp.ativo,.trace .tp:focus{background:var(--sun);color:#2A1B4D;outline:none}
+.lista{display:flex;flex-wrap:wrap;gap:.5rem;min-height:9.6rem;align-content:flex-start}
+.item{display:flex;flex-direction:column;align-items:center;border:3px solid var(--ink);border-radius:12px;background:var(--bg);padding:.4rem .7rem;transition:background .3s,transform .3s}
+.item b{font:700 1rem "Fredoka",sans-serif}.item i{font:600 .7rem "JetBrains Mono",monospace;font-style:normal;color:var(--soft)}
+.item.hl{background:var(--sun);color:#2A1B4D;transform:translateY(-4px)}.item.hl i{color:#2A1B4D}
+.item.novo{background:var(--mint);color:#08251B}.item.novo i{color:#08251B}
+@media (prefers-reduced-motion:no-preference){.item.novo,.par.novo{animation:surge .4s ease-out}}
+#lLog,#hLog{height:10.2em;overflow-y:auto}
+.mapa{display:grid;gap:.45rem;min-height:12.4rem;align-content:start}
+.par{display:flex;justify-content:space-between;align-items:center;gap:.5rem;border:3px solid var(--ink);border-radius:12px;background:var(--bg);padding:.4rem .8rem;transition:background .3s}
+.par .k{font:600 .95rem "JetBrains Mono",monospace;overflow-wrap:anywhere}.par .v{font:700 1.2rem "Fredoka",sans-serif;color:var(--plum)}
+.par.hl{background:var(--sun);color:#2A1B4D}.par.hl .v{color:#2A1B4D}
+.par.novo,.par.troca{background:var(--mint);color:#08251B}.par.novo .v,.par.troca .v{color:#08251B}
+@media (prefers-reduced-motion:no-preference){.par.troca{animation:pisca .5s ease-out 2}}
+@keyframes pisca{50%{transform:scale(1.04)}}
+/* fim extras 09-11 */
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="topbar"><a class="voltar" href="../index.html">🏠 Todas as aulas</a><span class="num-aula">Aula 09 de Java</span></div>
+      <h1>Um método é uma maquininha com nome.<span class="fork">Entra um valor, sai um resultado.</span></h1>
+      <p class="lead">Você escreve o código uma vez, dá um nome a ele e chama quantas vezes quiser. Escolha uma maquininha, coloque um valor e aperte <strong>Chamar</strong> para ver o valor viajar do <code>main</code> até o método e voltar.</p>
+      <div class="toggle metodos" role="group" aria-label="Escolha o método" id="mMet">
+        <button data-m="triplo" aria-pressed="true">triplo</button>
+        <button data-m="parabenizar" aria-pressed="false">parabenizar</button>
+        <button data-m="multiplo" aria-pressed="false">ehMultiploDe5</button>
+        <button data-m="area" aria-pressed="false">areaRetangulo</button>
+      </div>
+      <div class="form" id="mArgs"></div>
+      <div class="toggle">
+        <button id="mPlay">▶ Chamar o método</button>
+        <button id="mStep">⏭ Um passo</button>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="maquina" aria-hidden="true">
+        <div class="mq-col"><div class="fname">entra</div><div class="mq-chips" id="mIn"></div></div>
+        <div class="mq-box" id="mBox"><span class="gear">⚙️</span><b id="mNome">triplo</b></div>
+        <div class="mq-col"><div class="fname">sai</div><div class="mq-chips" id="mOutChip"></div></div>
+      </div>
+      <div class="fname" style="margin-top:.9rem">public static void main(String[] args)</div>
+      <div class="codebox" id="mMain" aria-live="polite"></div>
+      <div class="fname" style="margin-top:.8rem">o método (fora do main, dentro da classe)</div>
+      <div class="codebox" id="mDef"></div>
+      <div class="status" id="mStatus"></div>
+      <div class="console multi" id="mOut"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Por que criar métodos?</h2>
+      <p>Imagine que você precisa calcular a média de uma aluna em 5 lugares diferentes do programa. Sem método, você copia e cola a mesma conta 5 vezes. E se descobrir um erro na conta, precisa consertar nos 5 lugares!</p>
+      <p>Com um método, a conta mora <strong>num lugar só</strong>, com um nome. Você só chama o nome. Isso deixa o programa <strong>organizado</strong> (cada método faz uma coisa) e <strong>sem repetição</strong>.</p>
+      <p>Em Java, "método" e "função" são a mesma coisa. E você já usa métodos desde a aula 01: o <code>println</code> é um método!</p>
+    </div>
+    <div>
+      <div class="oop"><h3>Sem método 😩</h3><div class="bad">double m1 = (8 + 6) / 2.0;
+double m2 = (7 + 9) / 2.0;
+double m3 = (5 + 10) / 2.0;</div></div>
+      <div class="oop" style="margin-top:1rem"><h3>Com método 😎</h3><div class="good">double m1 = media(8, 6);
+double m2 = media(7, 9);
+double m3 = media(5, 10);</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>As peças de um método</h2>
+      <div class="anatomy">
+        <div class="part"><span class="chip">static</span><span>Por enquanto, sempre coloque. Ele deixa o <code>main</code> chamar o método direto, sem criar um objeto antes.</span></div>
+        <div class="part"><span class="chip c2">int</span><span>O <strong>tipo de retorno</strong>: o que o método devolve. Se não devolve nada, use <code>void</code>.</span></div>
+        <div class="part"><span class="chip c3">quadrado</span><span>O <strong>nome</strong>, em camelCase e de preferência um verbo ou uma pergunta: <code>calcularMedia</code>, <code>ehPar</code>.</span></div>
+        <div class="part"><span class="chip c4">(int n)</span><span>Os <strong>parâmetros</strong>: variáveis que recebem os valores enviados na chamada. Pode ter nenhum, um ou vários.</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Principal {</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="kw">public static void</span> main(String[] args) {</span>
+<span class="ln">        <span class="kw">int</span> r = quadrado(<span class="nu">4</span>); <span class="cm">// chamando</span></span>
+<span class="ln">        System.out.println(r);       <span class="cm">// 16</span></span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="kw">static int</span> quadrado(<span class="kw">int</span> n) {</span>
+<span class="ln">        <span class="kw">return</span> n * n;</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+      </div>
+      <p class="small">O método fica <strong>fora</strong> do <code>main</code>, mas <strong>dentro</strong> da classe. Nunca um método dentro do outro.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>void ou return?</h2>
+    <p>Todo método precisa dizer, antes do nome, se devolve alguma coisa.</p>
+    <div class="steps">
+      <div class="oop">
+        <h3>void: só faz, não devolve 📢</h3>
+        <p>Ele executa uma ação, como mostrar algo na tela, e acabou. Não dá para guardar o resultado numa variável.</p>
+        <div class="good">static void avisar(String msg) {
+    System.out.println("⚠️ " + msg);
+}
+
+avisar("Hora do intervalo!");</div>
+      </div>
+      <div class="oop">
+        <h3>return: calcula e devolve 🎁</h3>
+        <p>O <code>return</code> manda o valor de volta para quem chamou. O tipo do valor precisa combinar com o tipo declarado.</p>
+        <div class="good">static double metade(double x) {
+    return x / 2;
+}
+
+double m = metade(9); // 4.5</div>
+      </div>
+    </div>
+    <div class="tip">
+      <h3>💡 Parâmetro ou argumento?</h3>
+      <p>O <strong>parâmetro</strong> é a variável que fica nos parênteses da <em>definição</em> do método (<code>double x</code>). O <strong>argumento</strong> é o valor que você manda na <em>chamada</em> (<code>9</code>). Na hora da chamada, o argumento é copiado para dentro do parâmetro.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>O que é esse static?</h2>
+      <p>Lembra do Scanner? Para usar o <code>nextInt()</code>, você primeiro cria um objeto (<code>sc</code>) e depois chama <code>sc.nextInt()</code>. Esse método pertence ao <strong>objeto</strong>.</p>
+      <p>Um método <code>static</code> pertence à <strong>classe</strong>, não a um objeto. Por isso o <code>main</code> (que também é <code>static</code>) consegue chamá-lo direto, só pelo nome, sem criar nada antes.</p>
+      <p>Se esquecer o <code>static</code>, o Java reclama de "contexto estático" (<em>non-static method cannot be referenced from a static context</em>).</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="cm">// método de objeto: precisa do sc</span></span>
+<span class="ln"><span class="kw">int</span> n = sc.nextInt();</span>
+<span class="ln"> </span>
+<span class="ln"><span class="cm">// método static: chama direto</span></span>
+<span class="ln"><span class="kw">int</span> q = quadrado(<span class="nu">5</span>);</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Sobrecarga: mesmo nome, parâmetros diferentes</h2>
+      <p>A <strong>assinatura</strong> de um método é o nome junto com os tipos, a quantidade e a ordem dos parâmetros. Dois métodos podem ter o <strong>mesmo nome</strong> se as listas de parâmetros forem diferentes. Isso se chama <strong>sobrecarga</strong> (<em>overloading</em>).</p>
+      <p>O Java escolhe qual usar olhando os argumentos da chamada. Você já usa isso sem perceber: existem várias versões de <code>println</code>, uma para <code>String</code>, outra para <code>int</code>, outra para <code>double</code>...</p>
+      <p>Atenção: só mudar o tipo de retorno <strong>não</strong> vale. A assinatura não inclui o retorno.</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">static void</span> desenhar(<span class="kw">String</span> s) {</span>
+<span class="ln">    System.out.println(s);</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">static void</span> desenhar(<span class="kw">String</span> s, <span class="kw">int</span> vezes) {</span>
+<span class="ln">    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nu">0</span>; i &lt; vezes; i++) {</span>
+<span class="ln">        System.out.print(s);</span>
+<span class="ln">    }</span>
+<span class="ln">    System.out.println();</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln">desenhar(<span class="st">"🌷"</span>);     <span class="cm">// versão 1</span></span>
+<span class="ln">desenhar(<span class="st">"🌷"</span>, <span class="nu">4</span>);  <span class="cm">// versão 2</span></span>
+      </div>
+      <div class="console multi">🌷
+🌷🌷🌷🌷</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap two">
+    <div>
+      <h2>Um método pode chamar outro</h2>
+      <p>Dentro de um método, você pode chamar outro método normalmente, só pelo nome. E se ele devolve <code>boolean</code>, o resultado pode ir direto dentro de um <code>if</code>.</p>
+      <p>Repare também que a variável <code>t</code> só existe <strong>dentro</strong> do método onde foi criada. Fora das chaves dele, ela não existe. Isso se chama <strong>escopo</strong>.</p>
+    </div>
+    <div>
+      <div class="codebox">
+<span class="ln"><span class="kw">static boolean</span> estaQuente(<span class="kw">double</span> graus) {</span>
+<span class="ln">    <span class="kw">return</span> graus &gt;= <span class="nu">28</span>;</span>
+<span class="ln">}</span>
+<span class="ln"> </span>
+<span class="ln"><span class="kw">static void</span> sugerirRoupa(<span class="kw">double</span> graus) {</span>
+<span class="ln">    <span class="kw">String</span> t;</span>
+<span class="ln">    <span class="kw">if</span> (estaQuente(graus)) {</span>
+<span class="ln">        t = <span class="st">"vestido leve ☀️"</span>;</span>
+<span class="ln">    } <span class="kw">else</span> {</span>
+<span class="ln">        t = <span class="st">"casaquinho 🧥"</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">    System.out.println(<span class="st">"Vai de "</span> + t);</span>
+<span class="ln">}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Erros que toda iniciante comete (e tudo bem)</h2>
+    <div class="oops">
+      <div class="oop"><h3>Esquecer o static</h3><p>Chamado direto do main, o método precisa de static.</p><div class="bad">int quadrado(int n) { ... }</div><div class="good">static int quadrado(int n) { ... }</div></div>
+      <div class="oop"><h3>Método dentro do main</h3><p>Métodos ficam lado a lado na classe, nunca um dentro do outro.</p><div class="bad">main(...) {
+    static void oi() {...}
+}</div><div class="good">main(...) { oi(); }
+static void oi() {...}</div></div>
+      <div class="oop"><h3>Esquecer o return</h3><p>Se não é void, todo caminho precisa terminar com return.</p><div class="bad">static int dobro(int n) {
+    int d = n * 2;
+}</div><div class="good">static int dobro(int n) {
+    return n * 2;
+}</div></div>
+      <div class="oop"><h3>Jogar o resultado fora</h3><p>Chamar um método com retorno sem guardar ou mostrar o valor não mostra nada.</p><div class="bad">quadrado(5);</div><div class="good">System.out.println(quadrado(5));</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Teste o que você aprendeu</h2>
+    <div class="q" data-right="b">
+      <h3>1. O que significa <code>void</code>?</h3>
+      <div class="opts"><button data-o="a">Que o método é vazio</button><button data-o="b">Que não devolve nada</button><button data-o="c">Que dá erro</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! void quer dizer que o método só faz, não devolve." data-no="Quase. void indica que o método não devolve nenhum valor."></div>
+    </div>
+    <div class="q" data-right="c">
+      <h3>2. Em <code>static int soma(int a, int b)</code>, quais são os parâmetros?</h3>
+      <div class="opts"><button data-o="a">static e int</button><button data-o="b">soma</button><button data-o="c">int a e int b</button></div>
+      <div class="fb" aria-live="polite" data-ok="Certinho! Os parâmetros ficam entre os parênteses." data-no="Não é esse. Parâmetros são as variáveis entre os parênteses: int a e int b."></div>
+    </div>
+    <div class="q" data-right="a">
+      <h3>3. Qual destes pares é uma sobrecarga válida?</h3>
+      <div class="opts"><button data-o="a">voar(int) e voar(int, int)</button><button data-o="b">int voar(int) e double voar(int)</button><button data-o="c">Nenhum dos dois</button></div>
+      <div class="fb" aria-live="polite" data-ok="Mandou bem! Muda a quantidade de parâmetros, então pode." data-no="Olha de novo: mudar só o retorno não vale. Mudar os parâmetros vale."></div>
+    </div>
+    <div class="q" data-right="b">
+      <h3>4. O que aparece com <code>System.out.println(quadrado(3));</code>?</h3>
+      <div class="opts"><button data-o="a">quadrado(3)</button><button data-o="b">9</button><button data-o="c">6</button></div>
+      <div class="fb" aria-live="polite" data-ok="Isso! O método devolve 3 * 3 e o println mostra." data-no="Quase. O método calcula 3 * 3 e devolve 9."></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="challenge">
+      <h2>Desafio: o termômetro inteligente 🌡️</h2>
+      <p>Crie um método <code>paraFahrenheit(double celsius)</code> que devolve a temperatura em Fahrenheit (a conta é <code>celsius * 1.8 + 32</code>). Depois crie um método <code>descreverClima(double celsius)</code> que devolve "Frio" abaixo de 18, "Agradável" até 27 e "Calor" acima disso. No <code>main</code>, mostre as duas informações para 30 graus com printf.</p>
+      <button id="revelar" aria-expanded="false">Ver uma resposta possível</button>
+      <div id="resposta" hidden>
+        <div class="codebox">
+<span class="ln"><span class="kw">public class</span> Termometro {</span>
+<span class="ln">    <span class="kw">public static void</span> main(String[] args) {</span>
+<span class="ln">        <span class="kw">double</span> c = <span class="nu">30</span>;</span>
+<span class="ln">        System.out.printf(<span class="st">"%.1f°C = %.1f°F (%s)%n"</span>,</span>
+<span class="ln">            c, paraFahrenheit(c), descreverClima(c));</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="kw">static double</span> paraFahrenheit(<span class="kw">double</span> celsius) {</span>
+<span class="ln">        <span class="kw">return</span> celsius * <span class="nu">1.8</span> + <span class="nu">32</span>;</span>
+<span class="ln">    }</span>
+<span class="ln"> </span>
+<span class="ln">    <span class="kw">static String</span> descreverClima(<span class="kw">double</span> celsius) {</span>
+<span class="ln">        <span class="kw">if</span> (celsius &lt; <span class="nu">18</span>) {</span>
+<span class="ln">            <span class="kw">return</span> <span class="st">"Frio"</span>;</span>
+<span class="ln">        } <span class="kw">else if</span> (celsius &lt;= <span class="nu">27</span>) {</span>
+<span class="ln">            <span class="kw">return</span> <span class="st">"Agradável"</span>;</span>
+<span class="ln">        }</span>
+<span class="ln">        <span class="kw">return</span> <span class="st">"Calor"</span>;</span>
+<span class="ln">    }</span>
+<span class="ln">}</span>
+        </div>
+        <div class="console">30,0°C = 86,0°F (Calor)</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><div class="lessonnav"><a href="08-arrays.html">← Aula 08</a><a href="../index.html">Todas as aulas</a><a href="10-excecoes.html">Aula 10 →</a></div>Feito com carinho para quem está começando. 💜</div></footer>
+<script>(function(){
+  function $(i){return document.getElementById(i)}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function fd(x){return Number.isInteger(x)?x.toFixed(1):String(x)}
+  var M={
+    triplo:{nome:'triplo',params:[{n:'numero',t:'int',v:'7'}],ret:'int',varr:'resultado',
+      body:function(p){return ['<span class="kw">return</span> numero * <span class="nu">3</span>;']},
+      run:function(a){var n=parseInt(a[0],10)||0;return{ret:n*3,show:String(n*3),explica:n+' * 3 = '+(n*3)}}},
+    parabenizar:{nome:'parabenizar',params:[{n:'nome',t:'String',v:'Bia'}],ret:'void',
+      body:function(){return ['System.out.println(<span class="st">"Parabéns, "</span> + nome + <span class="st">"! 🎉"</span>);']},
+      run:function(a){return{print:'Parabéns, '+a[0]+'! 🎉',explica:'mostra a mensagem na tela'}}},
+    multiplo:{nome:'ehMultiploDe5',params:[{n:'numero',t:'int',v:'35'}],ret:'boolean',varr:'ok',
+      body:function(){return ['<span class="kw">return</span> numero % <span class="nu">5</span> == <span class="nu">0</span>;']},
+      run:function(a){var n=parseInt(a[0],10)||0,r=n%5===0;return{ret:r,show:String(r),explica:n+' % 5 = '+(n%5)+', então '+(n%5)+' == 0 dá '+r}}},
+    area:{nome:'areaRetangulo',params:[{n:'base',t:'double',v:'4.5'},{n:'altura',t:'double',v:'2'}],ret:'double',varr:'area',
+      body:function(){return ['<span class="kw">return</span> base * altura;']},
+      run:function(a){var b=parseFloat(a[0])||0,h=parseFloat(a[1])||0,r=Math.round(b*h*1e9)/1e9;return{ret:r,show:fd(r),explica:fd(b)+' * '+fd(h)+' = '+fd(r)}}}
+  };
+  var cur='triplo',fase=0,timer=null,res=null;
+  function args(){return M[cur].params.map(function(p,i){var e=$('arg'+i);return e?e.value:p.v})}
+  function lit(p,v){if(p.t==='String')return '<span class="st">"'+esc(v)+'"</span>';if(p.t==='double')return '<span class="nu">'+fd(parseFloat(v)||0)+'</span>';return '<span class="nu">'+(parseInt(v,10)||0)+'</span>'}
+  function buildArgs(){var h='';M[cur].params.forEach(function(p,i){h+='<label>'+p.n+' ('+p.t+') <input id="arg'+i+'" type="'+(p.t==='String'?'text':'number')+'" value="'+esc(p.v)+'"'+(p.t==='double'?' step="any"':p.t==='int'?' step="1"':' maxlength="14"')+'></label>'});$('mArgs').innerHTML=h;
+    M[cur].params.forEach(function(p,i){$('arg'+i).addEventListener('input',function(){p.v=$('arg'+i).value;reset()})})}
+  function render(){
+    var m=M[cur],a=args(),call=m.nome+'('+m.params.map(function(p,i){return lit(p,a[i])}).join(', ')+')';
+    var main=[];
+    if(m.ret==='void'){main.push('<span class="ln" id="L0">'+call+';</span>')}
+    else{main.push('<span class="ln" id="L0"><span class="kw">'+m.ret+'</span> '+m.varr+' = '+call+';</span>');main.push('<span class="ln" id="L1">System.out.println('+m.varr+');</span>')}
+    $('mMain').innerHTML=main.join('');
+    var sig='<span class="kw">static '+m.ret+'</span> '+m.nome+'('+m.params.map(function(p){return '<span class="kw">'+p.t+'</span> '+p.n}).join(', ')+') {';
+    var d='<span class="ln" id="D0">'+sig+'</span>';m.body().forEach(function(b,i){d+='<span class="ln" id="D'+(i+1)+'">    '+b+'</span>'});d+='<span class="ln">}</span>';
+    $('mDef').innerHTML=d;$('mNome').textContent=m.nome;
+  }
+  function hl(ids){document.querySelectorAll('#mMain .ln,#mDef .ln').forEach(function(l){l.classList.remove('on','off');if(l.id)l.classList.add(ids.indexOf(l.id)>-1?'on':'off')})}
+  function chips(el,list,cls){el.innerHTML='';list.forEach(function(t){var s=document.createElement('span');s.className='vchip '+(cls||'');s.textContent=t;el.appendChild(s)})}
+  function status(t,c){$('mStatus').textContent=t;$('mStatus').className='status'+(c?' '+c:'')}
+  function reset(){parar();fase=0;res=null;render();document.querySelectorAll('#mMain .ln,#mDef .ln').forEach(function(l){l.classList.remove('on','off')});
+    chips($('mIn'),[]);chips($('mOutChip'),[]);$('mBox').classList.remove('roda');$('mOut').textContent='';status('Escolha um método, mude os valores e aperte Chamar.')}
+  function passo(){
+    var m=M[cur],a=args();
+    if(fase===0){res=m.run(a);hl(['L0']);var argTxt=m.params.map(function(p,i){return p.t==='String'?'"'+a[i]+'"':p.t==='double'?fd(parseFloat(a[i])||0):String(parseInt(a[i],10)||0)});
+      chips($('mIn'),argTxt,'vai');status('O main chama '+m.nome+'('+argTxt.join(', ')+'). O programa pula para o método.');fase=1;return true}
+    if(fase===1){hl(['D0']);var pr=m.params.map(function(p,i){return p.n+' = '+(p.t==='String'?'"'+a[i]+'"':p.t==='double'?fd(parseFloat(a[i])||0):(parseInt(a[i],10)||0))});
+      chips($('mIn'),pr,'dentro');status('Os argumentos são copiados para os parâmetros: '+pr.join(', ')+'.');fase=2;return true}
+    if(fase===2){hl(['D1']);$('mBox').classList.add('roda');
+      if(m.ret==='void'){$('mOut').textContent=res.print;status('O método trabalha: '+res.explica+'.')}
+      else status('O método trabalha: '+res.explica+'.');fase=3;return true}
+    if(fase===3){$('mBox').classList.remove('roda');
+      if(m.ret==='void'){hl(['L0']);chips($('mOutChip'),['(nada)'],'nada');status('Como é void, não devolve nada. O main só continua daqui.','sim');fase=9;return false}
+      hl(['L0']);chips($('mOutChip'),[res.show],'volta');status('O return devolve '+res.show+' para o main, que guarda em '+m.varr+'.','sim');fase=4;return true}
+    if(fase===4){hl(['L1']);$('mOut').textContent=res.show;status('O main mostra o resultado na tela. 🎉','sim');fase=9;return false}
+    return false}
+  function btn(r){$('mPlay').textContent=r?'⏸ Pausar':'▶ Chamar o método'}
+  function parar(){if(timer){clearInterval(timer);timer=null}btn(false)}
+  $('mPlay').onclick=function(){if(timer){parar();return}if(fase===9)reset();btn(true);passo();timer=setInterval(function(){if(!passo())parar()},1000)};
+  $('mStep').onclick=function(){parar();if(fase===9)reset();passo()};
+  document.querySelectorAll('#mMet button').forEach(function(b){b.onclick=function(){cur=b.dataset.m;document.querySelectorAll('#mMet button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});buildArgs();reset()}});
+  buildArgs();reset();
+})();
+
+document.querySelectorAll('.q').forEach(function(q){var fb=q.querySelector('.fb');q.querySelectorAll('.opts button').forEach(function(b){b.onclick=function(){q.querySelectorAll('.opts button').forEach(function(x){x.classList.remove('right','wrong')});var ok=b.dataset.o===q.dataset.right;b.classList.add(ok?'right':'wrong');fb.textContent=ok?fb.dataset.ok:fb.dataset.no}})});
+(function(){var rev=document.getElementById('revelar'),resp=document.getElementById('resposta');if(!rev)return;rev.onclick=function(){var o=resp.hidden;resp.hidden=!o;rev.setAttribute('aria-expanded',o);rev.textContent=o?'Esconder resposta':'Ver uma resposta possível'}})();
+</script>
+</body>
+</html>
