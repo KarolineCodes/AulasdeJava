@@ -7,7 +7,7 @@
 ### Programação para meninas que estão começando ✨
 
 ![Java](https://img.shields.io/badge/Java-iniciantes-6B2FD6?style=for-the-badge&logo=openjdk&logoColor=white)
-![Aulas](https://img.shields.io/badge/aulas-11-FF6B6B?style=for-the-badge&logo=bookstack&logoColor=white)
+![Aulas](https://img.shields.io/badge/aulas-14-FF6B6B?style=for-the-badge&logo=bookstack&logoColor=white)
 ![Feito com amor](https://img.shields.io/badge/feito%20com-💜-FFC845?style=for-the-badge)
 ![Nova aula](https://img.shields.io/badge/aula%20nova-todo%20dia-2FBF8F?style=for-the-badge&logo=googlecalendar&logoColor=white)
 
@@ -40,7 +40,10 @@ Este repositório reúne aulas de **Java** feitas para meninas que estão dando 
 | 09 | ⚙️ **Métodos** | Parâmetros, `return`, `void`, `static` e sobrecarga | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/09-metodos.html) |
 | 10 | 🕸️ **Tratamento de exceções** | `try`, `catch`, `finally` e como ler o erro | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/10-excecoes.html) |
 | 11 | 🛒 **ArrayList e HashMap** | Listas que crescem e mapas de chave e valor | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/11-arraylist-hashmap.html) |
-| 12 | ✨ *em breve* | | |
+| 12 | 📜 **For-each e interfaces** | `for-each`, `interface`, `implements` e `@Override` | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/12-foreach-interfaces.html) |
+| 13 | 🧬 **Herança** | `extends`, sobrescrita, `super` e herança em cadeia | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/13-heranca.html) |
+| 14 | 🎭 **Polimorfismo** | Sobrecarga, sobrescrita e os 4 pilares da POO | [Abrir 💜](https://karolinecodes.github.io/AulasdeJava/aulas/14-polimorfismo.html) |
+| 15 | ✨ *em breve* | | |
 
 ---
 
@@ -69,7 +72,10 @@ AulasdeJava/
 │   ├── 08-arrays.html
 │   ├── 09-metodos.html
 │   ├── 10-excecoes.html
-│   └── 11-arraylist-hashmap.html
+│   ├── 11-arraylist-hashmap.html
+│   ├── 12-foreach-interfaces.html
+│   ├── 13-heranca.html
+│   └── 14-polimorfismo.html
 └── imagens/            → capas que aparecem ao compartilhar o link
     ├── capa-01-variaveis.png
     ├── capa-02-concatenacao-operadores.png
@@ -81,7 +87,10 @@ AulasdeJava/
     ├── capa-08-arrays.png
     ├── capa-09-metodos.png
     ├── capa-10-excecoes.png
-    └── capa-11-arraylist-hashmap.png
+    ├── capa-11-arraylist-hashmap.png
+    ├── capa-12-foreach-interfaces.png
+    ├── capa-13-heranca.png
+    └── capa-14-polimorfismo.png
 ```
 
 ---
